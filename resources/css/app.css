@@ -4,10 +4,27 @@
 @theme {
   --font-primary: "Righteous", sans-serif;
   --font-secondary: "Lexend Deca", sans-serif;
+  --color-primary: #6F3A64;
+  --color-secondary: #161229;
+}
+
+:root {
+  --bg-gradient: linear-gradient(to bottom, var(--color-secondary), var(--color-primary));
+  --bg-overlay: repeating-linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.02) 0 1px,
+    transparent 2px 4px
+  );
 }
 
 body {
     @apply font-secondary
+}
+
+.home-bg {
+  background: var(--bg-gradient), var(--bg-overlay);
+  background-attachment: fixed;
+  background-size: cover;
 }
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
