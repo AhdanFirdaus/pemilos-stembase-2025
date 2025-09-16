@@ -1,4 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&family=Righteous&display=swap');
 @import 'tailwindcss';
+
+@theme {
+  --font-primary: "Righteous", sans-serif;
+  --font-secondary: "Lexend Deca", sans-serif;
+}
+
+body {
+    @apply font-secondary
+}
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
