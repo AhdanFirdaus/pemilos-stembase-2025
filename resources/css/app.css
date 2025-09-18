@@ -4,8 +4,8 @@
 @theme {
   --font-primary: "Righteous", sans-serif;
   --font-secondary: "Lexend Deca", sans-serif;
-  --color-primary: #6F3A64;
-  --color-secondary: #161229;
+  --color-primary: #F275A1;
+  --color-secondary: #1C1729;
 }
 
 :root {
@@ -19,12 +19,6 @@
 
 body {
     @apply font-secondary
-}
-
-.home-bg {
-  background: var(--bg-gradient), var(--bg-overlay);
-  background-attachment: fixed;
-  background-size: cover;
 }
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
