@@ -1,4 +1,4 @@
-import Card from "../Elements/Card"; // sesuaikan path nya
+import Card from "../../Components/Elements/Card"; // sesuaikan path nya
 import { Users, UserCheck, UserX } from "lucide-react";
 import {
   PieChart,
