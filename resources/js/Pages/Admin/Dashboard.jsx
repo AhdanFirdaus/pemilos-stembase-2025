@@ -1,4 +1,6 @@
-import Card from "../../Components/Elements/Card"; // sesuaikan path nya
+import Wrapper from "../../Components/Layouts/Wrapper";
+import Card from "../../Components/Elements/Card";
+import Dropdown from "../../Components/Elements/Dropdown"; // pastikan sudah ada
 import { Users, UserCheck, UserX } from "lucide-react";
 import {
   PieChart,
@@ -26,25 +28,40 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Ringkasan</h1>
+    <Wrapper>
+      {/* Header Ringkasan */}
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Ringkasan</h1>
+
+        <div className="flex items-center gap-3">
+          {/* Dropdown filter */}
+          <Dropdown label="Filter">
+            <button className="block w-full px-3 py-2 text-left rounded-lg text-gray-600 hover:bg-purple-50">
+              Hari Ini
+            </button>
+            <button className="block w-full px-3 py-2 text-left rounded-lg text-gray-600 hover:bg-purple-50">
+              Minggu Ini
+            </button>
+          </Dropdown>
+        </div>
+      </div>
 
       {/* Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <Card className="bg-purple-200 flex flex-col items-center justify-center">
-          <UserCheck size={32} className="mb-2 text-purple-700" />
+        <Card className="bg-[#C8B6FF] flex flex-col items-center justify-center text-white">
+          <UserCheck size={32} className="mb-2 text-[#7D52FF]" />
           <p className="text-3xl font-bold">20</p>
           <span className="text-lg">Selesai</span>
         </Card>
 
-        <Card className="bg-pink-200 flex flex-col items-center justify-center">
-          <UserX size={32} className="mb-2 text-pink-700" />
+        <Card className="bg-[#F8B4D9] flex flex-col items-center justify-center text-white">
+          <UserX size={32} className="mb-2 text-[#FF008B]" />
           <p className="text-3xl font-bold">10</p>
           <span className="text-lg">Belum</span>
         </Card>
 
-        <Card className="bg-yellow-200 flex flex-col items-center justify-center">
-          <Users size={32} className="mb-2 text-yellow-700" />
+        <Card className="bg-[#FFD6A5] flex flex-col items-center justify-center text-white">
+          <Users size={32} className="mb-2 text-[#E4B200]" />
           <p className="text-3xl font-bold">30</p>
           <span className="text-lg">Total</span>
         </Card>
@@ -60,7 +77,7 @@ export default function Dashboard() {
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
-              <Bar dataKey="value" fill="#B388EB" radius={[8, 8, 0, 0]} />
+              <Bar dataKey="value" fill="#C8B6FF" radius={[8, 8, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </Card>
@@ -98,6 +115,6 @@ export default function Dashboard() {
           </div>
         </Card>
       </div>
-    </div>
+    </Wrapper>
   );
 }
