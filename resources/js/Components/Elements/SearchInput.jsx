@@ -1,7 +1,7 @@
 import React from "react";
 import { Search } from "lucide-react";
 
-export default function Search({ placeholder = "Search", className = "", ...props }) {
+export default function SearchInput({ placeholder = "Search", className = "", ...props }) {
   return (
     <div className={`relative ${className}`}>
       <input

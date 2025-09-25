@@ -4,7 +4,7 @@ import Card from "../../Components/Elements/Card";
 import { MoreHorizontal } from "lucide-react";
 import Form from "../../Components/Fragments/Form";
 import Button from "../../Components/Elements/Button";
-import SearchInput from "../../Components/Elements/Search";
+import SearchInput from "../../Components/Elements/SearchInput";
 
 export default function Paslon() {
   const [openForm, setOpenForm] = useState(false);
