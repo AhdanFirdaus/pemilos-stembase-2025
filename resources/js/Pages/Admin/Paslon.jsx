@@ -5,6 +5,7 @@ import { MoreHorizontal } from "lucide-react";
 import Form from "../../Components/Fragments/Form";
 import Button from "../../Components/Elements/Button";
 import SearchInput from "../../Components/Elements/SearchInput";
+import Table from "../../Components/Elements/Table"; // Import Table component
 
 export default function Paslon() {
   const [openForm, setOpenForm] = useState(false);
@@ -14,6 +15,19 @@ export default function Paslon() {
     { id: 2, ketua: "John Doe", wakil: "Jane Doe" },
     { id: 3, ketua: "John Doe", wakil: "Jane Doe" },
   ];
+
+  const columns = [
+    { key: "id", header: "Nomor Paslon", className: "rounded-tl-lg" },
+    { key: "ketua", header: "Ketua OSIS" },
+    { key: "wakil", header: "Wakil OSIS" },
+    { key: "action", header: "Aksi", className: "rounded-tr-lg" },
+  ];
+
+  const renderAction = (row) => (
+    <button className="p-1 rounded hover:bg-gray-100">
+      <MoreHorizontal size={18} className="text-gray-500" />
+    </button>
+  );
 
   return (
     <Wrapper>
@@ -42,33 +56,11 @@ export default function Paslon() {
 
         {/* Tabel */}
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="bg-[#C8B6FF] text-white text-left">
-                <th className="px-4 py-2 rounded-tl-lg">Nomor Paslon</th>
-                <th className="px-4 py-2">Ketua OSIS</th>
-                <th className="px-4 py-2">Wakil OSIS</th>
-                <th className="px-4 py-2 rounded-tr-lg">Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((row) => (
-                <tr
-                  key={row.id}
-                  className="border-b last:border-b-0 hover:bg-purple-50"
-                >
-                  <td className="px-4 py-2">{row.id}</td>
-                  <td className="px-4 py-2">{row.ketua}</td>
-                  <td className="px-4 py-2">{row.wakil}</td>
-                  <td className="px-4 py-2">
-                    <button className="p-1 rounded hover:bg-gray-100">
-                      <MoreHorizontal size={18} className="text-gray-500" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <Table
+            columns={columns}
+            data={data}
+            renderAction={renderAction}
+          />
         </div>
 
         {/* Footer */}
