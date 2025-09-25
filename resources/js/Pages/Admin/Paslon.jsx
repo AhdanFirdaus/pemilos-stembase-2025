@@ -1,8 +1,10 @@
 import { useState } from "react";
 import Wrapper from "../../Components/Layouts/Wrapper";
 import Card from "../../Components/Elements/Card";
-import { Search, MoreHorizontal } from "lucide-react";
-import Form from "../../Components/Fragments/Form"; // Import modal form
+import { MoreHorizontal } from "lucide-react";
+import Form from "../../Components/Fragments/Form";
+import Button from "../../Components/Elements/Button";
+import SearchInput from "../../Components/Elements/Search";
 
 export default function Paslon() {
   const [openForm, setOpenForm] = useState(false);
@@ -26,25 +28,15 @@ export default function Paslon() {
           </h2>
           <div className="flex items-center gap-3">
             {/* Search */}
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Cari"
-                className="border rounded-lg pl-8 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400"
-              />
-              <Search
-                size={16}
-                className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400"
-              />
-            </div>
+            <SearchInput placeholder="Cari" />
 
             {/* Tambah Paslon */}
-            <button
+            <Button
+              variant="primary"
               onClick={() => setOpenForm(true)}
-              className="px-4 py-2 rounded-lg bg-[#C8B6FF] text-white hover:bg-[#7D52FF] transition"
             >
               Tambah Paslon
-            </button>
+            </Button>
           </div>
         </div>
 
