@@ -20,3 +20,4 @@ Route::get('/admin/user', function () {
 Route::get('/votes', function () {
     return inertia('Votes/Votes');
 });
+

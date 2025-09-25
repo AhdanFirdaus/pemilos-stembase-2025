@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PairCandidate;
+use App\Models\Vote;
 use Illuminate\Http\Request;
 
-class PairCandidateController extends Controller
+class VoteController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return inertia('Admin/Paslon');
+        return inertia('Admin/Dashboard');
     }
 
     /**
@@ -34,7 +34,7 @@ class PairCandidateController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(PairCandidate $pairCandidate)
+    public function show(Vote $vote)
     {
         //
     }
@@ -42,7 +42,7 @@ class PairCandidateController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(PairCandidate $pairCandidate)
+    public function edit(Vote $vote)
     {
         //
     }
@@ -50,7 +50,7 @@ class PairCandidateController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, PairCandidate $pairCandidate)
+    public function update(Request $request, Vote $vote)
     {
         //
     }
@@ -58,7 +58,7 @@ class PairCandidateController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(PairCandidate $pairCandidate)
+    public function destroy(Vote $vote)
     {
         //
     }
