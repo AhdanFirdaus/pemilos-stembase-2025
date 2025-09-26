@@ -3,10 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\PairCandidate;
+use App\Services\CandidateService;
+use App\Services\PairCandidateService;
 use Illuminate\Http\Request;
 
 class PairCandidateController extends Controller
 {
+
+    public function __construct(public CandidateService $candidate_service, public PairCandidateService $pair_candidate_service)
+    {
+        
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -28,7 +36,7 @@ class PairCandidateController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        dd($request->all());
     }
 
     /**
