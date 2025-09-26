@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PairCandidate;
+use App\Models\Candidate;
 use App\Services\CandidateService;
 use App\Services\PairCandidateService;
 use Illuminate\Http\Request;
@@ -21,8 +22,22 @@ class PairCandidateController extends Controller
      */
     public function index()
     {
-        return inertia('Admin/Paslon');
-    }
+    $pairCandidates = PairCandidate::with(['leader', 'coLeader'])->get()->map(function ($pair) {
+        return [
+            'id' => $pair->id,
+            'pair_number' => $pair->pair_number,
+            'ketua' => $pair->leader->name,
+            'wakil' => $pair->coLeader->name,
+            'photo_path' => $pair->photo_path,
+            'vision' => $pair->vision,
+            'mission' => $pair->mission,
+        ];
+    });
+    // dd($pairCandidates);
+    return inertia('Admin/Paslon', [
+        'pairCandidates' => $pairCandidates,
+    ]);
+}
 
     /**
      * Show the form for creating a new resource.

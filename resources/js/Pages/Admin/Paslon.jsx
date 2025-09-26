@@ -7,14 +7,14 @@ import Button from "../../Components/Elements/Button";
 import SearchInput from "../../Components/Elements/SearchInput";
 import Table from "../../Components/Elements/Table"; // Import Table component
 
-export default function Paslon() {
+export default function Paslon({ pairCandidates }) {
   const [openForm, setOpenForm] = useState(false);
 
-  const data = [
-    { id: 1, ketua: "John Doe", wakil: "Jane Doe" },
-    { id: 2, ketua: "John Doe", wakil: "Jane Doe" },
-    { id: 3, ketua: "John Doe", wakil: "Jane Doe" },
-  ];
+  const data = pairCandidates.map((pair) => ({
+    id: pair.pair_number,
+    ketua: pair.ketua,
+    wakil: pair.wakil,
+  }));
 
   const columns = [
     { key: "id", header: "Nomor Paslon", className: "rounded-tl-lg" },
