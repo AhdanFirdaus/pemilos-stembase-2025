@@ -12,7 +12,7 @@ class VoterStudentController extends Controller
      */
     public function index()
     {
-        return inertia('Admin/User');
+        return inertia('Admin/Student');
     }
 
     /**

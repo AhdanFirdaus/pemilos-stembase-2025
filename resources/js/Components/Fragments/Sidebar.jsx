@@ -81,13 +81,13 @@ export default function Sidebar() {
             {userDropdown && isOpen && (
               <div className="ml-10 mt-1 space-y-1">
                 <Link
-                  href="/admin/student"
+                  href="/admin/siswa"
                   className="block px-2 py-1 rounded-lg text-gray-600 hover:bg-purple-50"
                 >
                   Student
                 </Link>
                 <Link
-                  href="/admin/teacher"
+                  href="/admin/guru"
                   className="block px-2 py-1 rounded-lg text-gray-600 hover:bg-purple-50"
                 >
                   Teacher
