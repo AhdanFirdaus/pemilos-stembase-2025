@@ -16,14 +16,13 @@ export default function Sidebar() {
 
   return (
     <aside
-      className={`bg-white  h-screen flex flex-col justify-between transition-all duration-300 ${
+      className={`bg-white h-screen flex flex-col justify-between transition-all duration-300 ${
         isOpen ? "w-64" : "w-20"
       }`}
     >
       {/* Header */}
       <div>
         <div className="flex items-center justify-between p-4">
-          {/* Logo hanya muncul jika open */}
           {isOpen && (
             <div className="flex items-center gap-2">
               <img src="/img/stemba.png" alt="Logo" className="w-8 h-8" />
@@ -82,16 +81,16 @@ export default function Sidebar() {
             {userDropdown && isOpen && (
               <div className="ml-10 mt-1 space-y-1">
                 <Link
-                  href="/admin/siswa"
+                  href="/admin/student"
                   className="block px-2 py-1 rounded-lg text-gray-600 hover:bg-purple-50"
                 >
-                  Siswa
+                  Student
                 </Link>
                 <Link
-                  href="/admin/guru"
+                  href="/admin/teacher"
                   className="block px-2 py-1 rounded-lg text-gray-600 hover:bg-purple-50"
                 >
-                  Guru
+                  Teacher
                 </Link>
               </div>
             )}
