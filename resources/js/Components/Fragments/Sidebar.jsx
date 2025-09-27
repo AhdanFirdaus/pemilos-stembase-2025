@@ -28,7 +28,11 @@ export default function Sidebar() {
     >
       {/* Header */}
       <div className="p-4">
-        <div className={`flex items-center ${isOpen ? "justify-between" : "justify-center"}`}>
+        <div
+          className={`flex items-center ${
+            isOpen ? "justify-between" : "justify-center"
+          } mb-8`} // tambahin jarak bawah header
+        >
           {isOpen && (
             <div className="flex items-center gap-2">
               <img src="/img/stemba.png" alt="Logo" className="w-8 h-8" />
@@ -44,7 +48,7 @@ export default function Sidebar() {
         </div>
 
         {/* Menu */}
-        <nav className="mt-6 space-y-2">
+        <nav className="space-y-2">
           {/* Dashboard */}
           <Link
             href="/admin/dashboard"

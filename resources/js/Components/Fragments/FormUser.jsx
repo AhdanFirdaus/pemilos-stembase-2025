@@ -9,7 +9,7 @@ export default function FormUser({ onClose, type }) {
     nama: "",
     kelas: "",
     nis: "",
-    nuptk: "",
+    nip: "",
   });
 
   const handleSubmit = (e) => {
@@ -90,14 +90,14 @@ export default function FormUser({ onClose, type }) {
             {type === "guru" && (
               <>
                 <Input
-                  label="NUPTK"
-                  name="nuptk"
+                  label="NIP"
+                  name="nip"
                   placeholder="Ex: 1234567890"
-                  value={data.nuptk}
-                  onChange={(e) => setData("nuptk", e.target.value)}
+                  value={data.nip}
+                  onChange={(e) => setData("nip", e.target.value)}
                 />
-                {errors.nuptk && (
-                  <div className="text-red-500 text-sm">{errors.nuptk}</div>
+                {errors.nip && (
+                  <div className="text-red-500 text-sm">{errors.nip}</div>
                 )}
               </>
             )}
