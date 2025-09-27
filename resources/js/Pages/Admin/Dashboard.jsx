@@ -1,6 +1,7 @@
+import { useState } from "react";
 import Wrapper from "../../Components/Layouts/Wrapper";
 import Card from "../../Components/Elements/Card";
-import Dropdown from "../../Components/Elements/Dropdown"; // pastikan sudah ada
+import Dropdown from "../../Components/Elements/Dropdown";
 import { Users, UserCheck, UserX } from "lucide-react";
 import {
   PieChart,
@@ -15,7 +16,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-export default function Dashboard({total, guru, siswa, pieData, barData}) {
+export default function Dashboard({ total, guru, siswa, pieData, barData }) {
+  const [filter, setFilter] = useState("Semua");
 
   return (
     <Wrapper>
@@ -23,17 +25,12 @@ export default function Dashboard({total, guru, siswa, pieData, barData}) {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Ringkasan</h1>
 
-        <div className="flex items-center gap-3">
-          {/* Dropdown filter */}
-          <Dropdown label="Filter">
-            <button className="block w-full px-3 py-2 text-left rounded-lg text-gray-600 hover:bg-purple-50">
-              Hari Ini
-            </button>
-            <button className="block w-full px-3 py-2 text-left rounded-lg text-gray-600 hover:bg-purple-50">
-              Minggu Ini
-            </button>
-          </Dropdown>
-        </div>
+        <Dropdown
+          label="Filter"
+          options={["Semua", "Siswa", "Guru"]}
+          value={filter}
+          onChange={setFilter}
+        />
       </div>
 
       {/* Cards */}
