@@ -3,16 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Models\Vote;
+use App\Services\VoteService;
 use Illuminate\Http\Request;
 
 class VoteController extends Controller
 {
+    public function __construct(public VoteService $service)
+    {
+        
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return inertia('Admin/Dashboard');
+        $total = $this->service->get_all();
+        $siswa = $this->service->get_student();
+        $guru = $this->service->get_teacher();
+        $pieData = $this->service->generate_pie_data($total);
+        $barData = $this->service->generate_bar_data($total);
+        return inertia('Admin/Dashboard',compact('total','siswa','guru','pieData','barData'));
     }
 
     /**

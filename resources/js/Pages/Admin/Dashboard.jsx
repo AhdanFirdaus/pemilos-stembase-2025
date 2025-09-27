@@ -15,17 +15,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-export default function Dashboard() {
-  const barData = [
-    { name: "Paslon 1", value: 40 },
-    { name: "Paslon 2", value: 70 },
-    { name: "Paslon 3", value: 110 },
-  ];
-
-  const pieData = [
-    { name: "Sudah", value: 70, color: "#A3E4D7" },
-    { name: "Belum", value: 30, color: "#F5B7B1" },
-  ];
+export default function Dashboard({total, guru, siswa, pieData, barData}) {
 
   return (
     <Wrapper>
@@ -50,19 +40,19 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <Card className="bg-[#C8B6FF] flex flex-col items-center justify-center text-white">
           <UserCheck size={32} className="mb-2 text-[#7D52FF]" />
-          <p className="text-3xl font-bold">20</p>
+          <p className="text-3xl font-bold">{total.voted}</p>
           <span className="text-lg">Selesai</span>
         </Card>
 
         <Card className="bg-[#F8B4D9] flex flex-col items-center justify-center text-white">
           <UserX size={32} className="mb-2 text-[#FF008B]" />
-          <p className="text-3xl font-bold">10</p>
+          <p className="text-3xl font-bold">{total.not_voted}</p>
           <span className="text-lg">Belum</span>
         </Card>
 
         <Card className="bg-[#FFD6A5] flex flex-col items-center justify-center text-white">
           <Users size={32} className="mb-2 text-[#E4B200]" />
-          <p className="text-3xl font-bold">30</p>
+          <p className="text-3xl font-bold">{total.total}</p>
           <span className="text-lg">Total</span>
         </Card>
       </div>

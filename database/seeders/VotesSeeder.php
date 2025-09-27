@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Vote;
 use App\Models\Voter;
+use App\Models\Vote;
 use App\Models\PairCandidate;
 
 class VotesSeeder extends Seeder
@@ -14,7 +14,6 @@ class VotesSeeder extends Seeder
      */
     public function run(): void
     {
-        // Example: let’s assign each voter to the first pair candidate
         $pairCandidate = PairCandidate::first();
 
         if (!$pairCandidate) {
@@ -26,6 +25,11 @@ class VotesSeeder extends Seeder
             Vote::create([
                 'voter_id' => $voter->id,
                 'pair_candidate_id' => $pairCandidate->id,
+            ]);
+
+            // Update voter status setelah melakukan vote
+            $voter->update([
+                'status' => 'sudah',
             ]);
         });
     }
