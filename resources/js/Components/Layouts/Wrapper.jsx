@@ -1,4 +1,3 @@
-// resources/js/Components/Layouts/Wrapper.jsx
 import Sidebar from "../Fragments/Sidebar";
 
 export default function Wrapper({ children }) {
