@@ -7,28 +7,19 @@ import SearchInput from "../../Components/Elements/SearchInput";
 import { MoreHorizontal, Eye, EyeOff, Upload, Download, Trash2 } from "lucide-react";
 import FormUser from "../../Components/Fragments/FormUser";
 
-export default function Student() {
+export default function Student({ students }) {
   const [openForm, setOpenForm] = useState(false);
-  const [data, setData] = useState([
-    {
-      id: 1,
-      nama: "Fauzan Daffa",
-      kelas: "XII SIJA 1",
-      nis: "234119221",
-      pass: "121212",
-      status: "Sudah",
-      showPass: false,
-    },
-    {
-      id: 2,
-      nama: "Ghaftaan Daffa",
-      kelas: "XII SIJA 1",
-      nis: "234119222",
-      pass: "121212",
-      status: "Belum",
-      showPass: false,
-    },
-  ]);
+  const [data, setData] = useState(
+  students.map((student) => ({
+    id: student.id,
+    nama: student.name,
+    kelas: student.kelas,
+    nis: student.identifier,
+    pass: student.password,
+    status: student.status,
+    showPass: false,
+  }))
+);  
 
   const togglePassword = (id) => {
     setData((prevData) =>

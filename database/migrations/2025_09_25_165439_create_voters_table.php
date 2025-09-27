@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('identifier');
-            $table->string('kelas');
+            $table->string('kelas')->nullable();
             $table->string('tipe');
             $table->enum('status',['belum','sudah']);
             $table->string('password');

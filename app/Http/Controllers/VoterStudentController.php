@@ -3,16 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Models\Voter;
+use App\Services\VoterService;
 use Illuminate\Http\Request;
 
 class VoterStudentController extends Controller
 {
+
+    public function __construct(public VoterService $service)
+    {
+        
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return inertia('Admin/Student');
+        $students = Voter::all()->where('tipe','siswa');
+        return inertia('Admin/Student', [
+            'students' => $students
+        ]);
     }
 
     /**
@@ -28,7 +38,13 @@ class VoterStudentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // dd($request->all());
+        $student = $this->service->create([
+            'nama' => $request->nama,
+            'nis' => $request->nis,
+            'kelas' => $request->kelas,
+        ]);
+        return redirect()->back()->with('success', 'Siswa berhasil ditambahkan!');
     }
 
     /**
