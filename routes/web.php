@@ -8,18 +8,16 @@ Route::get('/', function () {
 Route::get('/login', function () {
     return inertia('Auth/Login');
 });
-Route::get('/admin/dashboard', function () {
-    return inertia('Admin/Dashboard');
-});
-Route::get('/admin/paslon', function () {
-    return inertia('Admin/Paslon');
-});
-Route::get('/admin/student', function () {
-    return inertia('Admin/Student');
-});
-Route::get('/admin/teacher', function () {
-    return inertia('Admin/Teacher');
-});
+
 Route::get('/votes', function () {
     return inertia('Votes/Votes');
 });
+
+Route::prefix('/admin')
+    ->name('admin')
+    ->group(function () {
+        require_once __DIR__ . '/admin/paslon.php';
+        require_once __DIR__ . '/admin/dashboard.php';
+        require_once __DIR__ . '/admin/voter/siswa.php';
+        require_once __DIR__ . '/admin/voter/guru.php';
+    });
