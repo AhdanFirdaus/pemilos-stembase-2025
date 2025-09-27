@@ -2,10 +2,10 @@ import { useState } from "react";
 import Wrapper from "../../Components/Layouts/Wrapper";
 import Card from "../../Components/Elements/Card";
 import { MoreHorizontal } from "lucide-react";
-import Form from "../../Components/Fragments/Form";
 import Button from "../../Components/Elements/Button";
 import SearchInput from "../../Components/Elements/SearchInput";
 import Table from "../../Components/Elements/Table"; // Import Table component
+import Form from "../../Components/Fragments/FormPaslon";
 
 export default function Paslon({ pairCandidates }) {
   const [openForm, setOpenForm] = useState(false);

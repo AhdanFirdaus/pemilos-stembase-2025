@@ -1,0 +1,119 @@
+import React from "react";
+import Input from "../Elements/Input";
+import Button from "../Elements/Button";
+import { X } from "lucide-react";
+import { useForm } from "@inertiajs/react";
+
+export default function FormUser({ onClose, type }) {
+  const { data, setData, post, processing, errors } = useForm({
+    nama: "",
+    kelas: "",
+    nis: "",
+    nuptk: "",
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const route = type === "siswa" ? "/admin/siswa" : "/admin/guru";
+
+    post(route, {
+      onSuccess: () => onClose(),
+    });
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-gray-600/20 backdrop-blur-sm"
+        style={{ backgroundColor: "rgba(75, 85, 99, 0.2)" }}
+        onClick={onClose}
+      />
+
+      {/* Modal */}
+      <div className="relative bg-white rounded-xl shadow-lg w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto animate-fade-in">
+        {/* Tombol Close */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-600 hover:text-black"
+        >
+          <X size={20} />
+        </button>
+
+        {/* Form Content */}
+        <form onSubmit={handleSubmit}>
+          <h2 className="text-lg font-bold mb-6 text-purple-700">
+            Tambah {type === "siswa" ? "Siswa" : "Guru"}
+          </h2>
+
+          <div className="grid grid-cols-1 gap-4 mb-6">
+            {/* Nama */}
+            <Input
+              label="Nama"
+              name="nama"
+              placeholder="Ex: John Doe"
+              value={data.nama}
+              onChange={(e) => setData("nama", e.target.value)}
+            />
+            {errors.nama && (
+              <div className="text-red-500 text-sm">{errors.nama}</div>
+            )}
+
+            {/* Field Siswa */}
+            {type === "siswa" && (
+              <>
+                <Input
+                  label="Kelas"
+                  name="kelas"
+                  placeholder="Ex: XII SIJA 1"
+                  value={data.kelas}
+                  onChange={(e) => setData("kelas", e.target.value)}
+                />
+                {errors.kelas && (
+                  <div className="text-red-500 text-sm">{errors.kelas}</div>
+                )}
+
+                <Input
+                  label="NIS"
+                  name="nis"
+                  placeholder="Ex: 234119221"
+                  value={data.nis}
+                  onChange={(e) => setData("nis", e.target.value)}
+                />
+                {errors.nis && (
+                  <div className="text-red-500 text-sm">{errors.nis}</div>
+                )}
+              </>
+            )}
+
+            {/* Field Guru */}
+            {type === "guru" && (
+              <>
+                <Input
+                  label="NUPTK"
+                  name="nuptk"
+                  placeholder="Ex: 1234567890"
+                  value={data.nuptk}
+                  onChange={(e) => setData("nuptk", e.target.value)}
+                />
+                {errors.nuptk && (
+                  <div className="text-red-500 text-sm">{errors.nuptk}</div>
+                )}
+              </>
+            )}
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex justify-end gap-3">
+            <Button variant="secondary" onClick={onClose} type="button">
+              Batal
+            </Button>
+            <Button variant="primary" type="submit" disabled={processing}>
+              Tambah
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}

@@ -4,7 +4,7 @@ import Button from "../Elements/Button";
 import { X } from "lucide-react";
 import { useForm } from '@inertiajs/react';
 
-export default function Form({ onClose }) {
+export default function FormPaslon({ onClose }) {
   const { data, setData, post, processing, errors } = useForm({
     ketua_nama: '',
     ketua_nis: '',

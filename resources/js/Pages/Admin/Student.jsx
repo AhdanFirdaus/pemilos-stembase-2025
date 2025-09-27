@@ -5,8 +5,10 @@ import Table from "../../Components/Elements/Table";
 import Button from "../../Components/Elements/Button";
 import SearchInput from "../../Components/Elements/SearchInput";
 import { MoreHorizontal, Eye, EyeOff, Upload, Download, Trash2 } from "lucide-react";
+import FormUser from "../../Components/Fragments/FormUser";
 
 export default function Student() {
+  const [openForm, setOpenForm] = useState(false);
   const [data, setData] = useState([
     {
       id: 1,
@@ -21,7 +23,7 @@ export default function Student() {
       id: 2,
       nama: "Ghaftaan Daffa",
       kelas: "XII SIJA 1",
-      nis: "234119221",
+      nis: "234119222",
       pass: "121212",
       status: "Belum",
       showPass: false,
@@ -71,7 +73,7 @@ export default function Student() {
       <Card className="p-6">
         {/* Sub Header */}
         <div className="flex flex-col gap-4 mb-4">
-          {/* Baris 1: Semua Siswa & Tombol */}
+          {/* Baris 1 */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
             <h2 className="text-xl font-semibold">
               Semua Siswa <span className="text-gray-500">{data.length}</span>
@@ -92,10 +94,12 @@ export default function Student() {
             </div>
           </div>
 
-          {/* Baris 2: Search + Tambah Siswa */}
+          {/* Baris 2 */}
           <div className="flex flex-wrap items-center justify-end gap-3">
             <SearchInput placeholder="Cari" />
-            <Button variant="primary">Tambah Siswa</Button>
+            <Button variant="primary" onClick={() => setOpenForm(true)}>
+              Tambah Siswa
+            </Button>
           </div>
         </div>
 
@@ -125,9 +129,17 @@ export default function Student() {
 
         {/* Footer */}
         <p className="text-sm text-gray-500 mt-4">
-          Menampilkan <b>{data.length}</b> dari <b>3</b> Hasil
+          Menampilkan <b>{data.length}</b> dari <b>{data.length}</b> Hasil
         </p>
       </Card>
+
+      {/* Modal Form Tambah Siswa */}
+      {openForm && (
+        <FormUser
+          type="siswa"
+          onClose={() => setOpenForm(false)}
+        />
+      )}
     </Wrapper>
   );
 }
