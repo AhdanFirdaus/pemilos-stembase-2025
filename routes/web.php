@@ -14,8 +14,11 @@ Route::get('/admin/dashboard', function () {
 Route::get('/admin/paslon', function () {
     return inertia('Admin/Paslon');
 });
-Route::get('/admin/user', function () {
-    return inertia('Admin/User');
+Route::get('/admin/student', function () {
+    return inertia('Admin/Student');
+});
+Route::get('/admin/teacher', function () {
+    return inertia('Admin/Teacher');
 });
 Route::get('/votes', function () {
     return inertia('Votes/Votes');
