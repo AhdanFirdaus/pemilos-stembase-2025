@@ -23,7 +23,9 @@ export default function Table({ columns, data, renderAction }) {
           >
             {columns.map((column) => (
               <td key={`${row.id}-${column.key}`} className="px-4 py-2">
-                {column.key === "action" && renderAction
+                {column.render
+                  ? column.render(row)
+                  : column.key === "action" && renderAction
                   ? renderAction(row)
                   : row[column.key]}
               </td>
