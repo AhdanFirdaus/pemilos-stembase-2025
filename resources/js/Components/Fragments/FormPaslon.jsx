@@ -6,42 +6,48 @@ import { useForm } from "@inertiajs/react";
 
 export default function FormPaslon({ onClose, initialData, onSuccess }) {
   console.log("FormPaslon initialData:", initialData); // Debug: Inspect initialData
+  // console.table(initialData)
 
   const isEditing = !!initialData?.id;
 
   const { data, setData, post, put, processing, errors } = useForm({
-    ketua_nama: initialData?.ketua_nama || "",
+    _method: 'PUT',
+    ketua_nama: initialData?.ketua || "",
     ketua_nis: initialData?.ketua_nis || "",
     ketua_kelas: initialData?.ketua_kelas || "",
-    wakil_nama: initialData?.wakil_nama || "",
+    wakil_nama: initialData?.wakil || "",
     wakil_nis: initialData?.wakil_nis || "",
     wakil_kelas: initialData?.wakil_kelas || "",
-    no_paslon: initialData?.no_paslon ? String(initialData.no_paslon) : "", // Ensure string
+    no_paslon: initialData?.pair_number || "", // Ensure string
     foto: null,
-    visi: initialData?.visi || "",
-    misi: initialData?.misi || "",
+    visi: initialData?.vision || "",
+    misi: initialData?.mission || "",
   });
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    if (isEditing) {
-      put(`/admin/paslon/${initialData.id}`, {
-        forceFormData: true,
-        onSuccess: () => {
-          onClose();
-          onSuccess("edit", `${data.ketua_nama} & ${data.wakil_nama}`);
-        },
-      });
-    } else {
-      post("/admin/paslon", {
-        forceFormData: true,
-        onSuccess: () => {
-          onClose();
-          onSuccess("add", `${data.ketua_nama} & ${data.wakil_nama}`);
-        },
-      });
-    }
-  };
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  for (let [key, value] of formData.entries()) {
+    console.log(`${key}:`, value);
+  }
+  console.log("Submitting data:", data);
+  console.log("Foto object:", data.foto);
+
+  if (isEditing) {
+    post(`/admin/paslon/${initialData.id}`, {
+      forceFormData: true,
+    })
+  } else {
+    post("/admin/paslon", data, {
+      forceFormData: true,
+      onSuccess: () => {
+        onClose();
+        onSuccess("add", `${data.ketua_nama} & ${data.wakil_nama}`);
+      },
+    });
+  }
+};
+
 
   const handleFileChange = (e) => {
     setData("foto", e.target.files[0]);

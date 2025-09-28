@@ -43,6 +43,7 @@ export default function Paslon({ pairCandidates = [] }) {
     setData((prev) => prev.filter((row) => row.id !== id));
     setDeleteTarget(null);
     setShowAlert(false);
+    router.delete(`/admin/paslon/${id}`)
     setSuccessMessage(`Data paslon ${ketua_nama} & ${wakil_nama} berhasil dihapus.`);
     setShowSuccess(true);
   };
@@ -65,10 +66,25 @@ export default function Paslon({ pairCandidates = [] }) {
         <div className="flex items-center justify-end w-16">
           <ActionMenu
             onEdit={() => {
-              console.log("Editing data:", row); // Debug: Inspect row passed to FormPaslon
-              setEditingData(row);
+              console.log("Editing data:", row); // Debug
+              console.log("pairCandidates?", pairCandidates);
+
+              // Find the candidate whose pair_number matches row.id
+              const matchedCandidate = pairCandidates.find(
+                (candidate) => candidate.pair_number === String(row.id) // convert to string since pair_number is a string
+              );
+
+              if (matchedCandidate) {
+                console.log("Matched Candidate:", matchedCandidate);
+                setEditingData(matchedCandidate);
+              } else {
+                console.warn("No candidate found for row.id:", row.id);
+                setEditingData(row); // fallback
+              }
+
               setOpenForm(true);
             }}
+
             onDelete={() => {
               setDeleteTarget(row);
               setShowAlert(true);
@@ -127,10 +143,9 @@ export default function Paslon({ pairCandidates = [] }) {
               disabled={currentPage === 1 || data.length < 10}
               onClick={() => setCurrentPage((p) => p - 1)}
               className={`w-10 h-10 flex items-center justify-center rounded-md border transition
-                ${
-                  currentPage === 1 || data.length < 10
-                    ? "bg-gray-200 text-gray-400 cursor-not-allowed grayscale"
-                    : "bg-white hover:bg-gray-100 text-gray-700 border-gray-300"
+                ${currentPage === 1 || data.length < 10
+                  ? "bg-gray-200 text-gray-400 cursor-not-allowed grayscale"
+                  : "bg-white hover:bg-gray-100 text-gray-700 border-gray-300"
                 }`}
             >
               <ChevronLeft size={18} />
@@ -140,10 +155,9 @@ export default function Paslon({ pairCandidates = [] }) {
                 key={i}
                 onClick={() => setCurrentPage(i + 1)}
                 className={`px-3 py-1 rounded-md text-sm font-medium transition
-                  ${
-                    currentPage === i + 1
-                      ? "bg-[#C8B6FF] text-white"
-                      : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-100"
+                  ${currentPage === i + 1
+                    ? "bg-[#C8B6FF] text-white"
+                    : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-100"
                   }`}
               >
                 {i + 1}
@@ -153,10 +167,9 @@ export default function Paslon({ pairCandidates = [] }) {
               disabled={currentPage === totalPages || data.length < 10}
               onClick={() => setCurrentPage((p) => p + 1)}
               className={`w-10 h-10 flex items-center justify-center rounded-md border transition
-                ${
-                  currentPage === totalPages || data.length < 10
-                    ? "bg-gray-200 text-gray-400 cursor-not-allowed grayscale"
-                    : "bg-white hover:bg-gray-100 text-gray-700 border-gray-300"
+                ${currentPage === totalPages || data.length < 10
+                  ? "bg-gray-200 text-gray-400 cursor-not-allowed grayscale"
+                  : "bg-white hover:bg-gray-100 text-gray-700 border-gray-300"
                 }`}
             >
               <ChevronRight size={18} />

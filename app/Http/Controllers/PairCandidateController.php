@@ -8,6 +8,8 @@ use App\Services\CandidateService;
 use App\Services\PairCandidateService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
+
 
 class PairCandidateController extends Controller
 {
@@ -27,7 +29,11 @@ class PairCandidateController extends Controller
             'id' => $pair->id,
             'pair_number' => $pair->pair_number,
             'ketua' => $pair->leader->name,
+            'ketua_kelas' => $pair->leader->kelas,
+            'ketua_nis' => $pair->leader->nis,
             'wakil' => $pair->coLeader->name,
+            'wakil_kelas' => $pair->coLeader->kelas,
+            'wakil_nis' => $pair->coLeader->nis,
             'photo_path' => $pair->photo_path,
             'vision' => $pair->vision,
             'mission' => $pair->mission,
@@ -115,16 +121,31 @@ class PairCandidateController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, PairCandidate $pairCandidate)
+    public function update(Request $request, PairCandidate $paslon)
     {
-        //
+        if ($request->hasFile('foto')) {
+        $image = $request->file('foto');
+        $imageName = Str::random(20) . '.' . $image->getClientOriginalExtension();
+
+        // Delete old image if not default
+        if ($paslon->photo_path !== 'default.jpg') {
+            Storage::delete('public/' . $paslon->photo_path);
+            }
+
+        $image->storeAs('public/image/paslon', $imageName);
+        $paslon->photo_path = 'image/paslon/' . $imageName;
+        }
+        $this->pair_candidate_service->update($paslon, $request);
+        return redirect()->route('adminpaslon.index')->with('success', 'Data paslon berhasil di modifikasi!');
+
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(PairCandidate $pairCandidate)
+    public function destroy(PairCandidate $paslon)
     {
-        //
+        $paslon->delete();
+        return redirect()->route('adminpaslon.index')->with('success', 'Data paslon berhasil di hapus');
     }
 }
