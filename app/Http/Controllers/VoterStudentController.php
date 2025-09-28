@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\StudentExport;
+use App\Imports\StudentImport;
+use App\Models\Vote;
 use App\Models\Voter;
 use App\Services\VoterService;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class VoterStudentController extends Controller
 {
@@ -66,16 +71,39 @@ class VoterStudentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Voter $voter)
+    public function update(Request $request, Voter $siswa)
     {
-        //
+        $siswa->name = $request->nama;
+        $siswa->kelas = $request->kelas;
+        $siswa->identifier = $request->nis;
+        $siswa->save();
+        return redirect()->route('adminsiswa.index')->with('success', 'Data siswa berhasil di modifikasi!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Voter $voter)
+    public function destroy(Voter $siswa)
     {
-        //
+        $siswa->delete();
+        return redirect()->back()->with('success', 'Data siswa berhasil di hapus');
+    }
+
+    public function destroy_all()
+    {
+        $siswa = Voter::where('tipe','siswa')->delete();
+        return redirect()->back()->with('success', 'Seluruh data siswa berhasil di hapus');
+    }
+
+    public function export_student() 
+    {
+        return Excel::download(new StudentExport, 'data-siswa.xlsx');
+    }
+
+    public function import_student(Request $request) {
+        // dd($request->all());
+        Excel::import(new StudentImport, $request->file('file'));
+
+        return redirect()->route('adminsiswa.index')->with('success', 'Data siswa berhasil di impor');
     }
 }

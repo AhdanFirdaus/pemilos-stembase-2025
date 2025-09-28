@@ -18,6 +18,7 @@ export default function FormSiswa({ onClose, type, initialData, onSuccess }) {
     if (type === "siswa") {
       if (isEditing) {
         put(`/admin/siswa/${initialData.id}`, {
+          preserveState: false,
           onSuccess: () => {
             onClose();
             onSuccess("edit", data.nama);
@@ -25,6 +26,7 @@ export default function FormSiswa({ onClose, type, initialData, onSuccess }) {
         });
       } else {
         post("/admin/siswa", {
+          preserveState: false,
           onSuccess: () => {
             onClose();
             onSuccess("add", data.nama);

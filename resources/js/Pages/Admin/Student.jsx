@@ -8,6 +8,7 @@ import { Eye, EyeOff, Upload, Download, Trash2, ChevronLeft, ChevronRight } from
 import FormSiswa from "../../Components/Fragments/FormSiswa";
 import Alert from "../../Components/Elements/Alert";
 import ActionMenu from "../../Components/Elements/ActionMenu";
+import { router } from "@inertiajs/react";
 
 export default function Student({ students = [] }) {
   const [openForm, setOpenForm] = useState(false);
@@ -47,17 +48,40 @@ export default function Student({ students = [] }) {
   const handleImportClick = () => fileInputRef.current?.click();
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      console.log("File yang dipilih:", file.name);
-      // TODO: parsing file (CSV/Excel)
-    }
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    console.log("File siswa yang dipilih:", file.name);
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    router.post("/admin/siswaimport", formData, {
+      forceFormData: true,
+      preserveState: false,
+      onStart: () => {
+        console.log("Upload mulai...");
+      },
+      onProgress: (progress) => {
+        console.log("Progress:", progress); // bisa dipakai buat progress bar %
+      },
+      onSuccess: () => {
+        console.log("Import berhasil");
+      },
+      onError: (errors) => {
+        console.error("Import gagal", errors);
+      },
+      onFinish: () => {
+        console.log("Selesai");
+      },
+    });
   };
 
   const handleDeleteAll = () => {
     setData([]);
     setShowAlert(false);
     setSuccessMessage("Semua data siswa berhasil dihapus.");
+    router.delete('/admin/siswaall')
     setShowSuccess(true);
   };
 
@@ -65,6 +89,7 @@ export default function Student({ students = [] }) {
     setData((prev) => prev.filter((row) => row.id !== id));
     setDeleteTarget(null);
     setShowAlert(false);
+    router.delete(`/admin/guru/${id}`)
     setSuccessMessage(`Data ${nama} berhasil dihapus.`);
     setShowSuccess(true);
   };
@@ -161,7 +186,12 @@ export default function Student({ students = [] }) {
                   Impor
                 </Button>
               </div>
-              <Button variant="green">
+              <Button 
+                variant="green"
+                onClick={() => {
+                  window.location.href = '/admin/siswaexport'
+                }}
+              >
                 <Download size={16} className="mr-2" />
                 Ekspor
               </Button>
