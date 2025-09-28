@@ -20,15 +20,18 @@ export default function Student({ students = [] }) {
   const itemsPerPage = 10;
 
   const [data, setData] = useState(
-    students.map((student) => ({
-      id: student.id,
-      nama: student.name,
-      kelas: student.kelas,
-      nis: student.identifier,
-      pass: student.password,
-      status: student.status,
-      showPass: false,
-    }))
+    students.map((student) => {
+      console.log("Mapping students:", student); // Debug: Inspect students structure
+      return {
+        id: student.id,
+        nama: student.name || "",
+        kelas: student.kelas || "",
+        nis: student.identifier || "",
+        pass: student.password || "",
+        status: student.status || "Belum",
+        showPass: false,
+      };
+    })
   );
 
   const fileInputRef = useRef(null);
@@ -111,10 +114,12 @@ export default function Student({ students = [] }) {
     {
       key: "action",
       header: "Aksi",
+      className: "w-16 text-right", // Enforce fixed width and right alignment
       render: (row) => (
-        <div className="flex items-center justify-end w-32">
+        <div className="flex items-center justify-end w-16">
           <ActionMenu
             onEdit={() => {
+              console.log("Editing data:", row); // Debug: Inspect row passed to FormSiswa
               setEditingData(row);
               setOpenForm(true);
             }}
@@ -182,7 +187,7 @@ export default function Student({ students = [] }) {
         </div>
 
         {/* Table */}
-        <div className="w-full">
+        <div className="w-full overflow-x-auto">
           <Table columns={columns} data={currentData} />
         </div>
 
