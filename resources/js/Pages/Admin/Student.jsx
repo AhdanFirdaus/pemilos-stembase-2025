@@ -13,9 +13,13 @@ import {
   Trash2,
 } from "lucide-react";
 import FormUser from "../../Components/Fragments/FormUser";
+import Alert from "../../Components/Elements/Alert";
 
 export default function Student({ students = [] }) {
   const [openForm, setOpenForm] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);     // konfirmasi hapus
+  const [showSuccess, setShowSuccess] = useState(false); // sukses hapus
+
   const [data, setData] = useState(
     students.map((student) => ({
       id: student.id,
@@ -40,7 +44,7 @@ export default function Student({ students = [] }) {
 
   const handleImportClick = () => {
     if (fileInputRef.current) {
-      fileInputRef.current.click(); // buka file picker
+      fileInputRef.current.click();
     }
   };
 
@@ -48,8 +52,14 @@ export default function Student({ students = [] }) {
     const file = e.target.files[0];
     if (file) {
       console.log("File yang dipilih:", file.name);
-      // TODO: tambahkan logic parsing file (misalnya CSV/Excel) dan update state `data`
+      // TODO: parsing file (CSV/Excel)
     }
+  };
+
+  const handleDeleteAll = () => {
+    setData([]);             // hapus semua data
+    setShowAlert(false);     // tutup alert konfirmasi
+    setShowSuccess(true);    // tampilkan alert sukses
   };
 
   const columns = [
@@ -115,7 +125,7 @@ export default function Student({ students = [] }) {
               </Button>
 
               {/* Hapus Semua */}
-              <Button variant="red">
+              <Button variant="red" onClick={() => setShowAlert(true)}>
                 <Trash2 size={16} className="mr-2" />
                 Hapus Semua
               </Button>
@@ -163,6 +173,29 @@ export default function Student({ students = [] }) {
 
       {/* Modal Form Tambah Siswa */}
       {openForm && <FormUser type="siswa" onClose={() => setOpenForm(false)} />}
+
+      {/* SweetAlert Konfirmasi */}
+      <Alert
+        isOpen={showAlert}
+        icon="warning"
+        title="Yakin ingin hapus semua?"
+        text="Data siswa yang dihapus tidak bisa dikembalikan."
+        confirmText="Ya, Hapus!"
+        cancelText="Batal"
+        showCancel={true}
+        onConfirm={handleDeleteAll}
+        onCancel={() => setShowAlert(false)}
+      />
+
+      {/* SweetAlert Sukses */}
+      <Alert
+        isOpen={showSuccess}
+        icon="success"
+        title="Berhasil!"
+        text="Semua data siswa berhasil dihapus."
+        confirmText="OK"
+        onConfirm={() => setShowSuccess(false)}
+      />
     </Wrapper>
   );
 }

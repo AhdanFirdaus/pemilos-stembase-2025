@@ -1,3 +1,4 @@
+// resources/js/Pages/Teacher.jsx
 import { useState, useRef } from "react";
 import Wrapper from "../../Components/Layouts/Wrapper";
 import Card from "../../Components/Elements/Card";
@@ -13,9 +14,13 @@ import {
   Trash2,
 } from "lucide-react";
 import FormUser from "../../Components/Fragments/FormUser";
+import Alert from "../../Components/Elements/Alert";
 
 export default function Teacher({ teachers = [] }) {
   const [openForm, setOpenForm] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);     // konfirmasi hapus
+  const [showSuccess, setShowSuccess] = useState(false); // sukses hapus
+
   const [data, setData] = useState(
     teachers.map((teacher) => ({
       id: teacher.id,
@@ -49,6 +54,12 @@ export default function Teacher({ teachers = [] }) {
       console.log("File guru yang dipilih:", file.name);
       // TODO: parsing CSV/Excel dan masukkan ke state `data`
     }
+  };
+
+  const handleDeleteAll = () => {
+    setData([]);             // hapus semua data
+    setShowAlert(false);     // tutup alert konfirmasi
+    setShowSuccess(true);    // tampilkan alert sukses
   };
 
   const columns = [
@@ -113,7 +124,7 @@ export default function Teacher({ teachers = [] }) {
               </Button>
 
               {/* Hapus Semua */}
-              <Button variant="red">
+              <Button variant="red" onClick={() => setShowAlert(true)}>
                 <Trash2 size={16} className="mr-2" />
                 Hapus Semua
               </Button>
@@ -161,6 +172,29 @@ export default function Teacher({ teachers = [] }) {
 
       {/* Modal Form Tambah Guru */}
       {openForm && <FormUser type="guru" onClose={() => setOpenForm(false)} />}
+
+      {/* SweetAlert Konfirmasi */}
+      <Alert
+        isOpen={showAlert}
+        icon="warning"
+        title="Yakin ingin hapus semua?"
+        text="Data guru yang dihapus tidak bisa dikembalikan."
+        confirmText="Ya, Hapus!"
+        cancelText="Batal"
+        showCancel={true}
+        onConfirm={handleDeleteAll}
+        onCancel={() => setShowAlert(false)}
+      />
+
+      {/* SweetAlert Sukses */}
+      <Alert
+        isOpen={showSuccess}
+        icon="success"
+        title="Berhasil!"
+        text="Semua data guru berhasil dihapus."
+        confirmText="OK"
+        onConfirm={() => setShowSuccess(false)}
+      />
     </Wrapper>
   );
 }
