@@ -1,25 +1,34 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Wrapper from "../../Components/Layouts/Wrapper";
 import Card from "../../Components/Elements/Card";
 import Table from "../../Components/Elements/Table";
 import Button from "../../Components/Elements/Button";
 import SearchInput from "../../Components/Elements/SearchInput";
-import { MoreHorizontal, Eye, EyeOff, Upload, Download, Trash2 } from "lucide-react";
+import {
+  MoreHorizontal,
+  Eye,
+  EyeOff,
+  Upload,
+  Download,
+  Trash2,
+} from "lucide-react";
 import FormUser from "../../Components/Fragments/FormUser";
 
-export default function Student({ students }) {
+export default function Student({ students = [] }) {
   const [openForm, setOpenForm] = useState(false);
   const [data, setData] = useState(
-  students.map((student) => ({
-    id: student.id,
-    nama: student.name,
-    kelas: student.kelas,
-    nis: student.identifier,
-    pass: student.password,
-    status: student.status,
-    showPass: false,
-  }))
-);  
+    students.map((student) => ({
+      id: student.id,
+      nama: student.name,
+      kelas: student.kelas,
+      nis: student.identifier,
+      pass: student.password,
+      status: student.status,
+      showPass: false,
+    }))
+  );
+
+  const fileInputRef = useRef(null);
 
   const togglePassword = (id) => {
     setData((prevData) =>
@@ -27,6 +36,20 @@ export default function Student({ students }) {
         row.id === id ? { ...row, showPass: !row.showPass } : row
       )
     );
+  };
+
+  const handleImportClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click(); // buka file picker
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      console.log("File yang dipilih:", file.name);
+      // TODO: tambahkan logic parsing file (misalnya CSV/Excel) dan update state `data`
+    }
   };
 
   const columns = [
@@ -70,14 +93,28 @@ export default function Student({ students }) {
               Semua Siswa <span className="text-gray-500">{data.length}</span>
             </h2>
             <div className="flex flex-wrap gap-3 justify-end">
-              <Button variant="green">
-                <Upload size={16} className="mr-2" />
-                Impor
-              </Button>
+              {/* Impor */}
+              <div>
+                <input
+                  type="file"
+                  accept=".csv,.xlsx,.xls"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+                <Button variant="green" onClick={handleImportClick}>
+                  <Upload size={16} className="mr-2" />
+                  Impor
+                </Button>
+              </div>
+
+              {/* Ekspor */}
               <Button variant="green">
                 <Download size={16} className="mr-2" />
                 Ekspor
               </Button>
+
+              {/* Hapus Semua */}
               <Button variant="red">
                 <Trash2 size={16} className="mr-2" />
                 Hapus Semua
@@ -125,12 +162,7 @@ export default function Student({ students }) {
       </Card>
 
       {/* Modal Form Tambah Siswa */}
-      {openForm && (
-        <FormUser
-          type="siswa"
-          onClose={() => setOpenForm(false)}
-        />
-      )}
+      {openForm && <FormUser type="siswa" onClose={() => setOpenForm(false)} />}
     </Wrapper>
   );
 }
