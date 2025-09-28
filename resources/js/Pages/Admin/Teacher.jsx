@@ -8,8 +8,9 @@ import { Eye, EyeOff, Upload, Download, Trash2, ChevronLeft, ChevronRight } from
 import FormGuru from "../../Components/Fragments/FormGuru";
 import Alert from "../../Components/Elements/Alert";
 import ActionMenu from "../../Components/Elements/ActionMenu";
+import { router } from '@inertiajs/react';
 
-export default function Teacher({ teachers = [] }) {
+export default function Teacher({ teachers }) {
   const [openForm, setOpenForm] = useState(false);
   const [editingData, setEditingData] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
@@ -45,17 +46,41 @@ export default function Teacher({ teachers = [] }) {
   };
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      console.log("File guru yang dipilih:", file.name);
-      // TODO: parsing CSV/Excel dan masukkan ke state `data`
-    }
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    console.log("File guru yang dipilih:", file.name);
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    router.post("/admin/guruimport", formData, {
+      forceFormData: true,
+      preserveState: false,
+      onStart: () => {
+        console.log("Upload mulai...");
+      },
+      onProgress: (progress) => {
+        console.log("Progress:", progress); // bisa dipakai buat progress bar %
+      },
+      onSuccess: () => {
+        console.log("Import berhasil");
+      },
+      onError: (errors) => {
+        console.error("Import gagal", errors);
+      },
+      onFinish: () => {
+        console.log("Selesai");
+      },
+    });
   };
+
 
   const handleDeleteAll = () => {
     setData([]);
     setShowAlert(false);
     setSuccessMessage("Semua data guru berhasil dihapus.");
+    router.delete(`/admin/guruall`);
     setShowSuccess(true);
   };
 
@@ -63,6 +88,7 @@ export default function Teacher({ teachers = [] }) {
     setData((prev) => prev.filter((row) => row.id !== id));
     setDeleteTarget(null);
     setShowAlert(false);
+    router.delete(`/admin/guru/${id}`);
     setSuccessMessage(`Data ${nama} berhasil dihapus.`);
     setShowSuccess(true);
   };
@@ -151,7 +177,12 @@ export default function Teacher({ teachers = [] }) {
                   Impor
                 </Button>
               </div>
-              <Button variant="green">
+              <Button
+                variant="green"
+                onClick={() => {
+                  window.location.href = '/admin/guruexport'
+                }}
+              >
                 <Download size={16} className="mr-2" />
                 Ekspor
               </Button>

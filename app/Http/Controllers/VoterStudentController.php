@@ -19,7 +19,7 @@ class VoterStudentController extends Controller
      */
     public function index()
     {
-        $students = Voter::all()->where('tipe','siswa');
+        $students = Voter::where('tipe','siswa')->get();
         return inertia('Admin/Student', [
             'students' => $students
         ]);
@@ -39,7 +39,7 @@ class VoterStudentController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
-        $student = $this->service->create([
+        $student = $this->service->create_student([
             'nama' => $request->nama,
             'nis' => $request->nis,
             'kelas' => $request->kelas,

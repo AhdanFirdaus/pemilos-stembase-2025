@@ -21,6 +21,7 @@ export default function FormGuru({ onClose, type, initialData, onSuccess }) {
             onClose();
             onSuccess("edit", data.nama);
           },
+          // preserveState: false,
         });
       } else {
         post("/admin/guru", {
@@ -28,6 +29,7 @@ export default function FormGuru({ onClose, type, initialData, onSuccess }) {
             onClose();
             onSuccess("add", data.nama);
           },
+          preserveState: false,
         });
       }
     }
