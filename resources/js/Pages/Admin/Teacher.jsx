@@ -1,25 +1,23 @@
-// resources/js/Pages/Teacher.jsx
 import { useState, useRef } from "react";
 import Wrapper from "../../Components/Layouts/Wrapper";
 import Card from "../../Components/Elements/Card";
 import Table from "../../Components/Elements/Table";
 import Button from "../../Components/Elements/Button";
 import SearchInput from "../../Components/Elements/SearchInput";
-import {
-  MoreHorizontal,
-  Eye,
-  EyeOff,
-  Upload,
-  Download,
-  Trash2,
-} from "lucide-react";
-import FormUser from "../../Components/Fragments/FormUser";
+import { Eye, EyeOff, Upload, Download, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
+import FormGuru from "../../Components/Fragments/FormGuru";
 import Alert from "../../Components/Elements/Alert";
+import ActionMenu from "../../Components/Elements/ActionMenu";
 
 export default function Teacher({ teachers = [] }) {
   const [openForm, setOpenForm] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);     // konfirmasi hapus
-  const [showSuccess, setShowSuccess] = useState(false); // sukses hapus
+  const [editingData, setEditingData] = useState(null);
+  const [showAlert, setShowAlert] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const [data, setData] = useState(
     teachers.map((teacher) => ({
@@ -43,9 +41,7 @@ export default function Teacher({ teachers = [] }) {
   };
 
   const handleImportClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click(); // buka file picker
-    }
+    fileInputRef.current?.click();
   };
 
   const handleFileChange = (e) => {
@@ -57,10 +53,25 @@ export default function Teacher({ teachers = [] }) {
   };
 
   const handleDeleteAll = () => {
-    setData([]);             // hapus semua data
-    setShowAlert(false);     // tutup alert konfirmasi
-    setShowSuccess(true);    // tampilkan alert sukses
+    setData([]);
+    setShowAlert(false);
+    setSuccessMessage("Semua data guru berhasil dihapus.");
+    setShowSuccess(true);
   };
+
+  const handleDeleteOne = (id, nama) => {
+    setData((prev) => prev.filter((row) => row.id !== id));
+    setDeleteTarget(null);
+    setShowAlert(false);
+    setSuccessMessage(`Data ${nama} berhasil dihapus.`);
+    setShowSuccess(true);
+  };
+
+  // Pagination logic
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+  const currentData = data.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(data.length / itemsPerPage);
 
   const columns = [
     { key: "id", header: "No" },
@@ -83,7 +94,33 @@ export default function Teacher({ teachers = [] }) {
       ),
     },
     { key: "status", header: "Status" },
-    { key: "action", header: "Aksi" },
+    {
+      key: "action",
+      header: "Aksi",
+      render: (row) => (
+        <div className="flex items-center justify-between w-32">
+          <span
+            className={`px-2 py-1 rounded-full text-xs font-medium ${
+              row.status === "Sudah"
+                ? "bg-green-100 text-green-600"
+                : "bg-pink-100 text-pink-600"
+            }`}
+          >
+            {row.status}
+          </span>
+          <ActionMenu
+            onEdit={() => {
+              setEditingData(row);
+              setOpenForm(true);
+            }}
+            onDelete={() => {
+              setDeleteTarget(row);
+              setShowAlert(true);
+            }}
+          />
+        </div>
+      ),
+    },
   ];
 
   return (
@@ -93,16 +130,14 @@ export default function Teacher({ teachers = [] }) {
         <h1 className="text-2xl font-bold">Data Guru</h1>
       </div>
 
-      <Card className="p-6">
+      <Card className="p-6 flex flex-col bg-white">
         {/* Sub Header */}
         <div className="flex flex-col gap-4 mb-4">
-          {/* Baris 1 */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
             <h2 className="text-xl font-semibold">
               Semua Guru <span className="text-gray-500">{data.length}</span>
             </h2>
             <div className="flex flex-wrap gap-3 justify-end">
-              {/* Impor */}
               <div>
                 <input
                   type="file"
@@ -116,14 +151,10 @@ export default function Teacher({ teachers = [] }) {
                   Impor
                 </Button>
               </div>
-
-              {/* Ekspor */}
               <Button variant="green">
                 <Download size={16} className="mr-2" />
                 Ekspor
               </Button>
-
-              {/* Hapus Semua */}
               <Button variant="red" onClick={() => setShowAlert(true)}>
                 <Trash2 size={16} className="mr-2" />
                 Hapus Semua
@@ -131,67 +162,128 @@ export default function Teacher({ teachers = [] }) {
             </div>
           </div>
 
-          {/* Baris 2 */}
           <div className="flex flex-wrap items-center justify-end gap-3">
             <SearchInput placeholder="Cari" />
-            <Button variant="primary" onClick={() => setOpenForm(true)}>
+            <Button
+              variant="primary"
+              onClick={() => {
+                setEditingData(null);
+                setOpenForm(true);
+              }}
+            >
               Tambah Guru
             </Button>
           </div>
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto">
-          <Table
-            columns={columns}
-            data={data}
-            renderAction={(row) => (
-              <div className="flex items-center gap-2">
-                <span
-                  className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    row.status === "Sudah"
-                      ? "bg-green-100 text-green-600"
-                      : "bg-pink-100 text-pink-600"
-                  }`}
-                >
-                  {row.status}
-                </span>
-                <button className="p-1 rounded hover:bg-gray-100">
-                  <MoreHorizontal size={16} className="text-gray-500" />
-                </button>
-              </div>
-            )}
-          />
+        <div className="w-full">
+          <Table columns={columns} data={currentData} />
         </div>
 
-        {/* Footer */}
-        <p className="text-sm text-gray-500 mt-4">
-          Menampilkan <b>{data.length}</b> dari <b>{data.length}</b> Hasil
-        </p>
+        {/* Pagination */}
+        <div className="flex justify-between items-center mt-4">
+          <p className="text-sm text-gray-500">
+            Menampilkan{" "}
+            <b>
+              {indexOfFirst + 1}-{Math.min(indexOfLast, data.length)}
+            </b>{" "}
+            dari <b>{data.length}</b> hasil
+          </p>
+          <div className="flex gap-2 items-center">
+            <button
+              disabled={currentPage === 1 || data.length < 10}
+              onClick={() => setCurrentPage((p) => p - 1)}
+              className={`w-10 h-10 flex items-center justify-center rounded-md border transition
+                ${
+                  currentPage === 1 || data.length < 10
+                    ? "bg-gray-200 text-gray-400 cursor-not-allowed grayscale"
+                    : "bg-white hover:bg-gray-100 text-gray-700 border-gray-300"
+                }`}
+            >
+              <ChevronLeft size={18} />
+            </button>
+            {[...Array(totalPages)].map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentPage(i + 1)}
+                className={`px-3 py-1 rounded-md text-sm font-medium transition
+                  ${
+                    currentPage === i + 1
+                      ? "bg-[#C8B6FF] text-white"
+                      : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-100"
+                  }`}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button
+              disabled={currentPage === totalPages || data.length < 10}
+              onClick={() => setCurrentPage((p) => p + 1)}
+              className={`w-10 h-10 flex items-center justify-center rounded-md border transition
+                ${
+                  currentPage === totalPages || data.length < 10
+                    ? "bg-gray-200 text-gray-400 cursor-not-allowed grayscale"
+                    : "bg-white hover:bg-gray-100 text-gray-700 border-gray-300"
+                }`}
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
+        </div>
       </Card>
 
-      {/* Modal Form Tambah Guru */}
-      {openForm && <FormUser type="guru" onClose={() => setOpenForm(false)} />}
+      {/* Modal Form */}
+      {openForm && (
+        <FormGuru
+          type="guru"
+          initialData={editingData}
+          onClose={() => setOpenForm(false)}
+          onSuccess={(action, nama) => {
+            setSuccessMessage(
+              action === "add"
+                ? `Data ${nama} berhasil ditambahkan.`
+                : `Data ${nama} berhasil diperbarui.`
+            );
+            setShowSuccess(true);
+          }}
+        />
+      )}
 
-      {/* SweetAlert Konfirmasi */}
+      {/* Alert Konfirmasi Hapus */}
       <Alert
         isOpen={showAlert}
         icon="warning"
-        title="Yakin ingin hapus semua?"
-        text="Data guru yang dihapus tidak bisa dikembalikan."
+        title={
+          deleteTarget
+            ? `Yakin ingin hapus ${deleteTarget.nama}?`
+            : "Yakin ingin hapus semua?"
+        }
+        text={
+          deleteTarget
+            ? "Data guru yang dihapus tidak bisa dikembalikan."
+            : "Semua data guru akan dihapus permanen."
+        }
         confirmText="Ya, Hapus!"
         cancelText="Batal"
         showCancel={true}
-        onConfirm={handleDeleteAll}
-        onCancel={() => setShowAlert(false)}
+        onConfirm={() =>
+          deleteTarget
+            ? handleDeleteOne(deleteTarget.id, deleteTarget.nama)
+            : handleDeleteAll()
+        }
+        onCancel={() => {
+          setDeleteTarget(null);
+          setShowAlert(false);
+        }}
       />
 
-      {/* SweetAlert Sukses */}
+      {/* Alert Sukses */}
       <Alert
         isOpen={showSuccess}
         icon="success"
         title="Berhasil!"
-        text="Semua data guru berhasil dihapus."
+        text={successMessage}
         confirmText="OK"
         onConfirm={() => setShowSuccess(false)}
       />

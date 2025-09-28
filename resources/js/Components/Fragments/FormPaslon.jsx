@@ -2,32 +2,49 @@ import React from "react";
 import Input from "../Elements/Input";
 import Button from "../Elements/Button";
 import { X } from "lucide-react";
-import { useForm } from '@inertiajs/react';
+import { useForm } from "@inertiajs/react";
 
-export default function FormPaslon({ onClose }) {
-  const { data, setData, post, processing, errors } = useForm({
-    ketua_nama: '',
-    ketua_nis: '',
-    ketua_kelas: '',
-    wakil_nama: '',
-    wakil_nis: '',
-    wakil_kelas: '',
-    no_paslon: '',
+export default function FormPaslon({ onClose, initialData, onSuccess }) {
+  console.log("FormPaslon initialData:", initialData); // Debug: Inspect initialData
+
+  const isEditing = !!initialData?.id;
+
+  const { data, setData, post, put, processing, errors } = useForm({
+    ketua_nama: initialData?.ketua_nama || "",
+    ketua_nis: initialData?.ketua_nis || "",
+    ketua_kelas: initialData?.ketua_kelas || "",
+    wakil_nama: initialData?.wakil_nama || "",
+    wakil_nis: initialData?.wakil_nis || "",
+    wakil_kelas: initialData?.wakil_kelas || "",
+    no_paslon: initialData?.no_paslon ? String(initialData.no_paslon) : "", // Ensure string
     foto: null,
-    visi: '',
-    misi: '',
+    visi: initialData?.visi || "",
+    misi: initialData?.misi || "",
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    post('/admin/paslon', {
-      forceFormData: true, // Untuk mendukung file upload
-      onSuccess: () => onClose(), // Tutup modal setelah sukses
-    });
+    if (isEditing) {
+      put(`/admin/paslon/${initialData.id}`, {
+        forceFormData: true,
+        onSuccess: () => {
+          onClose();
+          onSuccess("edit", `${data.ketua_nama} & ${data.wakil_nama}`);
+        },
+      });
+    } else {
+      post("/admin/paslon", {
+        forceFormData: true,
+        onSuccess: () => {
+          onClose();
+          onSuccess("add", `${data.ketua_nama} & ${data.wakil_nama}`);
+        },
+      });
+    }
   };
 
   const handleFileChange = (e) => {
-    setData('foto', e.target.files[0]);
+    setData("foto", e.target.files[0]);
   };
 
   return (
@@ -51,14 +68,17 @@ export default function FormPaslon({ onClose }) {
 
         {/* Form Content */}
         <form onSubmit={handleSubmit}>
-          <h2 className="text-lg font-bold mb-4 text-purple-700">Data Ketua</h2>
+          <h2 className="text-lg font-bold mb-4 text-purple-700">
+            {isEditing ? "Edit Paslon" : "Tambah Paslon"}
+          </h2>
+          <h3 className="text-md font-semibold mb-2 text-purple-600">Data Ketua</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div>
               <Input
                 label="Nama"
                 placeholder="Ex: John Doe"
                 value={data.ketua_nama}
-                onChange={(e) => setData('ketua_nama', e.target.value)}
+                onChange={(e) => setData("ketua_nama", e.target.value)}
               />
               {errors.ketua_nama && <div className="text-red-500 text-sm">{errors.ketua_nama}</div>}
             </div>
@@ -67,7 +87,7 @@ export default function FormPaslon({ onClose }) {
                 label="NIS"
                 placeholder="Ex: 234119221"
                 value={data.ketua_nis}
-                onChange={(e) => setData('ketua_nis', e.target.value)}
+                onChange={(e) => setData("ketua_nis", e.target.value)}
               />
               {errors.ketua_nis && <div className="text-red-500 text-sm">{errors.ketua_nis}</div>}
             </div>
@@ -76,20 +96,20 @@ export default function FormPaslon({ onClose }) {
                 label="Kelas"
                 placeholder="Ex: XII SIJA 1"
                 value={data.ketua_kelas}
-                onChange={(e) => setData('ketua_kelas', e.target.value)}
+                onChange={(e) => setData("ketua_kelas", e.target.value)}
               />
               {errors.ketua_kelas && <div className="text-red-500 text-sm">{errors.ketua_kelas}</div>}
             </div>
           </div>
 
-          <h2 className="text-lg font-bold mb-4 text-purple-700">Data Wakil</h2>
+          <h3 className="text-md font-semibold mb-2 text-purple-600">Data Wakil</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div>
               <Input
                 label="Nama"
                 placeholder="Ex: Jane Doe"
                 value={data.wakil_nama}
-                onChange={(e) => setData('wakil_nama', e.target.value)}
+                onChange={(e) => setData("wakil_nama", e.target.value)}
               />
               {errors.wakil_nama && <div className="text-red-500 text-sm">{errors.wakil_nama}</div>}
             </div>
@@ -98,7 +118,7 @@ export default function FormPaslon({ onClose }) {
                 label="NIS"
                 placeholder="Ex: 234119221"
                 value={data.wakil_nis}
-                onChange={(e) => setData('wakil_nis', e.target.value)}
+                onChange={(e) => setData("wakil_nis", e.target.value)}
               />
               {errors.wakil_nis && <div className="text-red-500 text-sm">{errors.wakil_nis}</div>}
             </div>
@@ -107,7 +127,7 @@ export default function FormPaslon({ onClose }) {
                 label="Kelas"
                 placeholder="Ex: XII SIJA 1"
                 value={data.wakil_kelas}
-                onChange={(e) => setData('wakil_kelas', e.target.value)}
+                onChange={(e) => setData("wakil_kelas", e.target.value)}
               />
               {errors.wakil_kelas && <div className="text-red-500 text-sm">{errors.wakil_kelas}</div>}
             </div>
@@ -121,7 +141,7 @@ export default function FormPaslon({ onClose }) {
                 label="No. Paslon"
                 placeholder="Ex: 1"
                 value={data.no_paslon}
-                onChange={(e) => setData('no_paslon', e.target.value)}
+                onChange={(e) => setData("no_paslon", e.target.value)}
               />
               {errors.no_paslon && <div className="text-red-500 text-sm">{errors.no_paslon}</div>}
             </div>
@@ -143,7 +163,7 @@ export default function FormPaslon({ onClose }) {
               className="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-400"
               rows={3}
               value={data.visi}
-              onChange={(e) => setData('visi', e.target.value)}
+              onChange={(e) => setData("visi", e.target.value)}
             />
             {errors.visi && <div className="text-red-500 text-sm">{errors.visi}</div>}
           </div>
@@ -155,7 +175,7 @@ export default function FormPaslon({ onClose }) {
               className="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-400"
               rows={4}
               value={data.misi}
-              onChange={(e) => setData('misi', e.target.value)}
+              onChange={(e) => setData("misi", e.target.value)}
             />
             {errors.misi && <div className="text-red-500 text-sm">{errors.misi}</div>}
           </div>
@@ -166,7 +186,7 @@ export default function FormPaslon({ onClose }) {
               Batal
             </Button>
             <Button variant="primary" type="submit" disabled={processing}>
-              Tambah
+              {isEditing ? "Simpan" : "Tambah"}
             </Button>
           </div>
         </form>

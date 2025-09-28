@@ -4,21 +4,33 @@ import Button from "../Elements/Button";
 import { X } from "lucide-react";
 import { useForm } from "@inertiajs/react";
 
-export default function FormUser({ onClose, type }) {
-  const { data, setData, post, processing, errors } = useForm({
-    nama: "",
-    kelas: "",
-    nis: "",
-    nip: "",
+export default function FormGuru({ onClose, type, initialData, onSuccess }) {
+  const { data, setData, post, put, processing, errors } = useForm({
+    nama: initialData?.nama || "",
+    nip: initialData?.nip || "",
   });
+
+  const isEditing = !!initialData?.id;
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const route = type === "siswa" ? "/admin/siswa" : "/admin/guru";
-
-    post(route, {
-      onSuccess: () => onClose(),
-    });
+    if (type === "guru") {
+      if (isEditing) {
+        put(`/admin/guru/${initialData.id}`, {
+          onSuccess: () => {
+            onClose();
+            onSuccess("edit", data.nama);
+          },
+        });
+      } else {
+        post("/admin/guru", {
+          onSuccess: () => {
+            onClose();
+            onSuccess("add", data.nama);
+          },
+        });
+      }
+    }
   };
 
   return (
@@ -43,7 +55,7 @@ export default function FormUser({ onClose, type }) {
         {/* Form Content */}
         <form onSubmit={handleSubmit}>
           <h2 className="text-lg font-bold mb-6 text-purple-700">
-            Tambah {type === "siswa" ? "Siswa" : "Guru"}
+            {isEditing ? "Edit Guru" : "Tambah Guru"}
           </h2>
 
           <div className="grid grid-cols-1 gap-4 mb-6">
@@ -59,34 +71,7 @@ export default function FormUser({ onClose, type }) {
               <div className="text-red-500 text-sm">{errors.nama}</div>
             )}
 
-            {/* Field Siswa */}
-            {type === "siswa" && (
-              <>
-                <Input
-                  label="Kelas"
-                  name="kelas"
-                  placeholder="Ex: XII SIJA 1"
-                  value={data.kelas}
-                  onChange={(e) => setData("kelas", e.target.value)}
-                />
-                {errors.kelas && (
-                  <div className="text-red-500 text-sm">{errors.kelas}</div>
-                )}
-
-                <Input
-                  label="NIS"
-                  name="nis"
-                  placeholder="Ex: 234119221"
-                  value={data.nis}
-                  onChange={(e) => setData("nis", e.target.value)}
-                />
-                {errors.nis && (
-                  <div className="text-red-500 text-sm">{errors.nis}</div>
-                )}
-              </>
-            )}
-
-            {/* Field Guru */}
+            {/* NIP */}
             {type === "guru" && (
               <>
                 <Input
@@ -109,7 +94,7 @@ export default function FormUser({ onClose, type }) {
               Batal
             </Button>
             <Button variant="primary" type="submit" disabled={processing}>
-              Tambah
+              {isEditing ? "Simpan" : "Tambah"}
             </Button>
           </div>
         </form>
