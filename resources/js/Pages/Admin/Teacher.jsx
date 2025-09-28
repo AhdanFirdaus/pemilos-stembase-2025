@@ -21,14 +21,17 @@ export default function Teacher({ teachers }) {
   const itemsPerPage = 10;
 
   const [data, setData] = useState(
-    teachers.map((teacher) => ({
-      id: teacher.id,
-      nama: teacher.name,
-      nip: teacher.identifier,
-      pass: teacher.password,
-      status: teacher.status,
-      showPass: false,
-    }))
+    teachers.map((teacher) => {
+      console.log("Mapping teachers:", teacher); // Debug: Inspect teachers structure
+      return {
+        id: teacher.id,
+        nama: teacher.name || "",
+        nip: teacher.identifier || "",
+        pass: teacher.password || "",
+        status: teacher.status || "Belum",
+        showPass: false,
+      };
+    })
   );
 
   const fileInputRef = useRef(null);
@@ -119,23 +122,30 @@ export default function Teacher({ teachers }) {
         </div>
       ),
     },
-    { key: "status", header: "Status" },
+    {
+      key: "status",
+      header: "Status",
+      render: (row) => (
+        <span
+          className={`px-2 py-1 rounded-full text-xs font-medium ${
+            row.status === "Sudah"
+              ? "bg-green-100 text-green-600"
+              : "bg-pink-100 text-pink-600"
+          }`}
+        >
+          {row.status}
+        </span>
+      ),
+    },
     {
       key: "action",
       header: "Aksi",
+      className: "w-16 text-right", // Enforce fixed width and right alignment
       render: (row) => (
-        <div className="flex items-center justify-between w-32">
-          <span
-            className={`px-2 py-1 rounded-full text-xs font-medium ${
-              row.status === "Sudah"
-                ? "bg-green-100 text-green-600"
-                : "bg-pink-100 text-pink-600"
-            }`}
-          >
-            {row.status}
-          </span>
+        <div className="flex items-center justify-end w-16">
           <ActionMenu
             onEdit={() => {
+              console.log("Editing data:", row); // Debug: Inspect row passed to FormGuru
               setEditingData(row);
               setOpenForm(true);
             }}
@@ -208,7 +218,7 @@ export default function Teacher({ teachers }) {
         </div>
 
         {/* Table */}
-        <div className="w-full">
+        <div className="w-full overflow-x-auto">
           <Table columns={columns} data={currentData} />
         </div>
 

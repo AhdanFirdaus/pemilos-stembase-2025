@@ -60,8 +60,9 @@ export default function Paslon({ pairCandidates = [] }) {
     {
       key: "action",
       header: "Aksi",
+      className: "w-16 text-right", // Enforce fixed width and right alignment
       render: (row) => (
-        <div className="flex items-center justify-end w-32">
+        <div className="flex items-center justify-end w-16">
           <ActionMenu
             onEdit={() => {
               console.log("Editing data:", row); // Debug: Inspect row passed to FormPaslon
