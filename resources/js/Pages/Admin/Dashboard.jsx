@@ -16,8 +16,16 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-export default function Dashboard({ total, guru, siswa, pieData, barData }) {
-  const [filter, setFilter] = useState("Semua");
+export default function Dashboard({ datas }) {
+  const [filter, setFilter] = useState("total"); // default ke "total"
+
+  // pilih dataset berdasarkan filter
+  const currentData =
+    filter === "siswa"
+      ? datas.siswa
+      : filter === "guru"
+      ? datas.guru
+      : datas.total;
 
   return (
     <Wrapper>
@@ -27,7 +35,11 @@ export default function Dashboard({ total, guru, siswa, pieData, barData }) {
 
         <Dropdown
           label="Filter"
-          options={["Semua", "Siswa", "Guru"]}
+          options={[
+            { label: "Total", value: "total" },
+            { label: "Siswa", value: "siswa" },
+            { label: "Guru", value: "guru" },
+          ]}
           value={filter}
           onChange={setFilter}
         />
@@ -37,19 +49,19 @@ export default function Dashboard({ total, guru, siswa, pieData, barData }) {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <Card className="bg-[#C8B6FF] flex flex-col items-center justify-center text-white">
           <UserCheck size={32} className="mb-2 text-[#7D52FF]" />
-          <p className="text-3xl font-bold">{total.voted}</p>
+          <p className="text-3xl font-bold">{currentData.total?.voted ?? currentData.siswa?.voted ?? currentData.guru?.voted}</p>
           <span className="text-lg">Selesai</span>
         </Card>
 
         <Card className="bg-[#F8B4D9] flex flex-col items-center justify-center text-white">
           <UserX size={32} className="mb-2 text-[#FF008B]" />
-          <p className="text-3xl font-bold">{total.not_voted}</p>
+          <p className="text-3xl font-bold">{currentData.total?.not_voted ?? currentData.siswa?.not_voted ?? currentData.guru?.not_voted}</p>
           <span className="text-lg">Belum</span>
         </Card>
 
         <Card className="bg-[#FFD6A5] flex flex-col items-center justify-center text-white">
           <Users size={32} className="mb-2 text-[#E4B200]" />
-          <p className="text-3xl font-bold">{total.total}</p>
+          <p className="text-3xl font-bold">{currentData.total?.total ?? currentData.siswa?.total ?? currentData.guru?.total}</p>
           <span className="text-lg">Total</span>
         </Card>
       </div>
@@ -59,7 +71,7 @@ export default function Dashboard({ total, guru, siswa, pieData, barData }) {
         <Card>
           <h2 className="text-lg font-semibold mb-4">Perolehan Data</h2>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={barData}>
+            <BarChart data={currentData.barData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis />
@@ -74,7 +86,7 @@ export default function Dashboard({ total, guru, siswa, pieData, barData }) {
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
-                data={pieData}
+                data={currentData.pieData}
                 dataKey="value"
                 nameKey="name"
                 cx="50%"
@@ -83,14 +95,14 @@ export default function Dashboard({ total, guru, siswa, pieData, barData }) {
                 innerRadius={60}
                 label
               >
-                {pieData.map((entry, index) => (
+                {currentData.pieData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
               </Pie>
             </PieChart>
           </ResponsiveContainer>
           <div className="flex justify-center gap-4 mt-4">
-            {pieData.map((item, index) => (
+            {currentData.pieData.map((item, index) => (
               <div key={index} className="flex items-center gap-2">
                 <span
                   className="w-4 h-4 rounded-full"
