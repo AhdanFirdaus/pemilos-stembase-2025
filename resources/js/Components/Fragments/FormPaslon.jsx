@@ -11,7 +11,6 @@ export default function FormPaslon({ onClose, initialData, onSuccess }) {
   const isEditing = !!initialData?.id;
 
   const { data, setData, post, put, processing, errors } = useForm({
-    _method: 'PUT',
     ketua_nama: initialData?.ketua || "",
     ketua_nis: initialData?.ketua_nis || "",
     ketua_kelas: initialData?.ketua_kelas || "",
@@ -22,6 +21,7 @@ export default function FormPaslon({ onClose, initialData, onSuccess }) {
     foto: null,
     visi: initialData?.vision || "",
     misi: initialData?.mission || "",
+    ...(initialData && {_method: 'PUT'})
   });
 
   const handleSubmit = (e) => {

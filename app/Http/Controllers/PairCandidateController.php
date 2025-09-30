@@ -145,6 +145,8 @@ class PairCandidateController extends Controller
      */
     public function destroy(PairCandidate $paslon)
     {
+        $paslon->leader->delete();
+        $paslon->coLeader->delete();
         $paslon->delete();
         return redirect()->route('adminpaslon.index')->with('success', 'Data paslon berhasil di hapus');
     }
