@@ -1,9 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&family=Righteous&display=swap');
 @import 'tailwindcss';
 
+
+@font-face {
+  font-family: 'genshin';
+  src: url('../../public/zh-cn.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 @theme {
   --font-primary: "Righteous", sans-serif;
   --font-secondary: "Lexend Deca", sans-serif;
+  --font-genshin: "genshin", sans-serif;
   --color-primary: #F275A1;
   --color-secondary: #1C1729;
 }
