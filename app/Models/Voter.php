@@ -2,16 +2,25 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class Voter extends Model
+class Voter extends Authenticatable
 {
+    use Notifiable;
+
     protected $fillable = [
         'name',
         'identifier',
         'kelas',
         'tipe',
         'status',
-        'password'
+        'password',
+        'plain_password',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
     ];
 }

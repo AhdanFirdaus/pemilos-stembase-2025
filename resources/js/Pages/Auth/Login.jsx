@@ -13,12 +13,26 @@ import {
     Asterisk,
     Earth,
 } from "lucide-react";
+import { useForm } from "@inertiajs/react";
 
 export default function Login() {
     const [isTeacher, setIsTeacher] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const nisnRef = useRef(null);
     const nuptkRef = useRef(null);
+
+    // 🔹 Use Inertia's useForm
+    const { data, setData, post, processing, errors } = useForm({
+        identifier: "",
+        password: "",
+    });
+
+    // 🔹 Handle submit
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        console.log("================")
+        post("/auth/login"); // 👈 your route endpoint here (adjust as needed)
+    };
 
     // refs untuk icon inner element (yang digeser oleh cursor)
     const iconInnerRefs = useRef([]);
@@ -263,6 +277,7 @@ export default function Login() {
                 >
                     {/* FRONT - SISWA */}
                     <form
+                        onSubmit={handleSubmit}
                         className="absolute inset-0 p-10 rounded-2xl bg-white/3 backdrop-blur-sm border border-white/10 flex flex-col items-center justify-center"
                         style={{ backfaceVisibility: "hidden" }}
                     >
@@ -271,16 +286,26 @@ export default function Login() {
                         </h2>
 
                         <input
+                            name="identifier"
                             ref={nisnRef}
+                            value={data.identifier}
+                            onChange={(e) => setData("identifier", e.target.value)}
                             autoComplete="off"
                             type="text"
                             placeholder="Masukkan NISN"
                             className="w-full placeholder-white/60 text-white rounded-lg px-4 py-3 mb-4 outline-none border border-white/12 focus:border-white/20"
                         />
 
+                        {errors.identifier && (
+                            <p className="text-red-400 text-sm mb-3">{errors.identifier}</p>
+                        )}
+
                         <div className="relative w-full mb-4">
                             <input
+                                name="password"
                                 autoComplete="new-password"
+                                value={data.password}
+                                onChange={(e) => setData("password", e.target.value)}
                                 type={showPassword ? "text" : "password"}
                                 placeholder="Masukkan Password"
                                 className="w-full placeholder-white/60 text-white rounded-lg px-4 py-3 pr-10 outline-none border border-white/12 focus:border-white/20"
@@ -298,7 +323,10 @@ export default function Login() {
                             </button>
                         </div>
 
-                        <button className="w-full bg-primary text-white font-semibold py-3 rounded-lg mb-3 cursor-pointer">
+                        <button 
+                        type="submit"
+                        disabled={processing}
+                        className="w-full bg-primary text-white font-semibold py-3 rounded-lg mb-3 cursor-pointer">
                             Masuk
                         </button>
 
@@ -313,6 +341,7 @@ export default function Login() {
 
                     {/* BACK - GURU */}
                     <form
+                        onSubmit={handleSubmit}
                         className="absolute inset-0 p-10 rounded-2xl bg-white/3 backdrop-blur-sm border border-white/10 flex flex-col items-center justify-center"
                         style={{
                             transform: "rotateY(180deg)",
@@ -324,6 +353,9 @@ export default function Login() {
                         </h2>
 
                         <input
+                            name="identifier"
+                            value={data.identifier}
+                            onChange={(e) => setData("identifier", e.target.value)}
                             ref={nuptkRef}
                             autoComplete="off"
                             type="text"
@@ -333,6 +365,9 @@ export default function Login() {
 
                         <div className="relative w-full mb-4">
                             <input
+                                name="password"
+                                value={data.password}
+                                onChange={(e) => setData("password", e.target.value)}
                                 autoComplete="new-password"
                                 type={showPassword ? "text" : "password"}
                                 placeholder="Masukkan Password"
@@ -351,7 +386,10 @@ export default function Login() {
                             </button>
                         </div>
 
-                        <button className="w-full bg-primary text-white font-semibold py-3 rounded-lg mb-3">
+                        <button 
+                            type="submit"
+                            disabled={processing}
+                            className="w-full bg-primary text-white font-semibold py-3 rounded-lg mb-3">
                             Masuk
                         </button>
 
