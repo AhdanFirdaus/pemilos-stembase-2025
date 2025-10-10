@@ -27,7 +27,7 @@ export default function Teacher({ teachers }) {
         id: teacher.id,
         nama: teacher.name || "",
         nip: teacher.identifier || "",
-        pass: teacher.password || "",
+        pass: teacher.plain_password || "",
         status: teacher.status || "Belum",
         showPass: false,
       };

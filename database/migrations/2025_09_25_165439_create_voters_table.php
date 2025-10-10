@@ -14,11 +14,12 @@ return new class extends Migration
         Schema::create('voters', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('identifier');
+            $table->string('identifier')->unique();
             $table->string('kelas')->nullable();
             $table->string('tipe');
             $table->enum('status',['belum','sudah']);
             $table->string('password');
+            $table->string('plain_password');
             $table->timestamps();
         });
     }

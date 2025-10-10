@@ -28,7 +28,7 @@ export default function Student({ students = [] }) {
         nama: student.name || "",
         kelas: student.kelas || "",
         nis: student.identifier || "",
-        pass: student.password || "",
+        pass: student.plain_password || "",
         status: student.status || "Belum",
         showPass: false,
       };
