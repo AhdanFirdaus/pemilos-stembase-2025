@@ -1,0 +1,45 @@
+[
+    {
+        "id": 1,
+        "name": "Paslon Satu",
+        "ketua": "Nadhifa Syakira Andena",
+        "wakil": "Ayu Sekar Kinanti",
+        "visi": "Menjadikan osis yang arif dalam berfikir, bijak dalam bertindak. Sinergi dalam mengabdi serta mampu bersaing secara global berlandaskan keimanan, ketaqwaan, pancasila dan cinta tanah air. Serta Menjadi wadah kreasi pelajar yang responsif, energik, dan menghasilkan aksi nyata yang bermanfaat bagi sekolah.",
+        "misi": [
+            "Membuat keorganisasian yang bernafas sehat, di mana setiap anggotanya bekerja dengan rasa saling percaya, terbuka, dan saling menghargai.",
+            "Meningkatkan kreativitas dan jiwa kewirausahaan siswa melalui kegiatan yang inovatif.",
+            "Mengembangkan potensi dan bakat siswa di berbagai bidang melalui wadah ekspresi yang positif.",
+            "Menampung dan mewujudkan aspirasi siswa dalam rangka meningkatkan kualitas kegiatan sekolah.",
+            "Membuat sekolah menjadi tempat yang bukan hanya untuk belajar, tapi juga tempat tumbuh dengan pengalaman unik yang sulit dilupakan."
+        ]
+    },
+    {
+        "id": 2,
+        "name": "Paslon Dua",
+        "ketua": "Ahmad Nurlatif Miftakhul Ulum",
+        "wakil": "Aldino Enovan Wilys",
+        "visi": "Mewujudkan OSIS sebagai organisasi berlandaskan Pancasila yang disiplin, kritis, dan ramah, serta mampu mendukung siswa agar aktif dan berkembang sesuai minat serta bakatnya.",
+        "misi": [
+            "Menjadikan nilai Pancasila sebagai pedoman membentuk karakter OSIS.",
+            "Menumbuhkan partisipasi siswa.",
+            "Mendukung minat dan bakat siswa.",
+            "Meningkatkan koordinasi antar organisasi/ekstrakurikuler.",
+            "Mengoptimalkan penggunaan teknologi informasi.",
+            "Mewujudkan OSIS DIKIRA (Disiplin, Kritis, Ramah)."
+        ]
+    },
+    {
+        "id": 3,
+        "name": "Paslon Tiga",
+        "ketua": "Muhammad Akbar",
+        "wakil": "Nathanael Owen Yudhistira",
+        "visi": "Mewujudkan OSIS SMKN 7 Semarang sebagai wadah aspirasi siswa yang terbuka, penghubung yang harmonis antara siswa dan sekolah, serta sarana kolaborasi untuk mengembangkan potensi siswa baik di bidang ekstrakurikuler maupun kompetensi jurusan.",
+        "misi": [
+            "Menyediakan ruang aspirasi siswa melalui forum rutin, kotak aspirasi digital, maupun pertemuan terbuka agar suara siswa tersampaikan dengan baik.",
+            "Menjadi penghubung yang komunikatif antara siswa dan pihak sekolah, dengan menyampaikan aspirasi, masukan, serta kebutuhan siswa secara jelas dan solutif.",
+            "Mendukung pengembangan kegiatan ekstrakurikuler dengan memberi ruang kolaborasi dan apresiasi bagi setiap prestasi maupun karya siswa.",
+            "Menghidupkan potensi jurusan melalui program lintas jurusan, pameran karya, dan kompetisi keterampilan yang melibatkan kreativitas siswa dalam tingkat nasional/internasional",
+            "Menghadirkan OSIS yang inklusif dan transparan, terbuka terhadap ide-ide kreatif, serta dapat menjadi organisasi yang dipercaya seluruh siswa."
+        ]
+    }
+]
