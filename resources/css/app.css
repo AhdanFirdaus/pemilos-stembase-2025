@@ -26,6 +26,33 @@
   );
 }
 
+
+/* Custom Scrollbar */
+* {
+  scrollbar-width: thin; /* bisa: auto | thin | none */
+  scrollbar-color: #F275A1 #1C1729; /* thumb track */
+}
+
+::-webkit-scrollbar {
+  width: 10px; /* lebar scrollbar */
+  height: 10px; /* tinggi scrollbar horizontal */
+}
+
+::-webkit-scrollbar-track {
+  background: #1C1729; /* warna track */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #F275A1; /* warna scrollbar */
+  border-radius: 10px;
+  border: 2px solid #1C1729; /* biar ada jarak dari track */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #ff8cb9; /* efek hover */
+}
+
+
 body {
     @apply font-secondary
 }
