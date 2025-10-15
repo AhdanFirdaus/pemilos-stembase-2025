@@ -11,6 +11,7 @@ import {
     AlertCircle,
     PartyPopper,
 } from "lucide-react";
+import { router } from "@inertiajs/react";
 
 const Votes = () => {
     const [candidates, setCandidates] = useState([]);
@@ -184,6 +185,7 @@ const Votes = () => {
 
     const confirmVote = () => {
         console.log("Voted for", selectedCandidate);
+        router.post('/voter', { candidate_id: selectedCandidate.id })
         setShowConfirm(false);
         setShowSuccess(true);
     };

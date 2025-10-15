@@ -187,7 +187,7 @@ const Home = () => {
             setCurrentIndex(currentIndex + 1);
         } else {
             console.log("Vote for", candidates[currentIndex]);
-            window.location.href = "/voter/home"; // arahkan ke halaman lain
+            window.location.href = "/voter/"; // arahkan ke halaman lain
         }
     };
 
