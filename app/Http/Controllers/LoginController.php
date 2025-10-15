@@ -82,4 +82,35 @@ class LoginController extends Controller
     {
         //
     }
+
+    public function get_admin() {
+        if (auth('web')->check()) {
+            return redirect()->intended('/admin/dashboard');
+        }
+        return inertia('Admin/Login');
+    }
+
+    public function admin(Request $request) {
+        $credentials = [
+            'email' => $request->input('username'),
+            'password' => $request->input('password'),
+        ];
+        if (Auth::guard('web')->attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->intended('/admin/dashboard');
+        }
+        return back()->withErrors([
+            'identifier' => 'Invalid credentials.',
+        ]);
+    }
+
+    public function logout_admin(Request $request)
+    {
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/auth/admin/login');
+    }
 }

@@ -81,7 +81,7 @@ export default function Sidebar() {
       {/* Logout */}
       <div className="p-4">
         <Link
-          href="/logout"
+          href="/auth/admin/logout"
           method="post"
           as="button"
           className={`flex items-center gap-2 w-full py-2 rounded-lg transition-all duration-200 ${
