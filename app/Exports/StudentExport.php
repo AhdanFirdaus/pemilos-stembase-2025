@@ -41,7 +41,7 @@ class StudentExport implements  FromCollection, WithHeadings, WithMapping
             'ID',
             'Nama',
             'Kelas',
-            'NIP',
+            'NIS',
             'Status',
             'Dibuat Pada',
         ];
