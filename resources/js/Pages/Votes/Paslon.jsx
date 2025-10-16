@@ -12,10 +12,12 @@ import {
     ChevronRight,
     CheckCircle,
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";  // Import Framer Motion
 
-const Paslon = ({pairs}) => {
+const Paslon = ({ pairs }) => {
     const [candidates, setCandidates] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [direction, setDirection] = useState(1);  // 1 untuk next (slide dari kanan), -1 untuk prev (slide dari kiri)
     const iconInnerRefs = useRef([]);
     iconInnerRefs.current = [];
 
@@ -129,6 +131,13 @@ const Paslon = ({pairs}) => {
     useEffect(() => {
         setCandidates(pairs);
     }, []);
+    // useEffect(() => {
+    //     fetch("/data.json")
+    //         .then((response) => response.json())
+    //         .then((data) => setCandidates(data))
+    //         .catch((error) => console.error("Error fetching data:", error));
+    //     setCandidates(pairs);
+    // }, []);
 
     // cursor following (throttle via requestAnimationFrame)
     useEffect(() => {
@@ -175,12 +184,14 @@ const Paslon = ({pairs}) => {
 
     const handlePrev = () => {
         if (currentIndex > 0) {
+            setDirection(-1);
             setCurrentIndex(currentIndex - 1);
         }
     };
 
     const handleNext = () => {
         if (currentIndex < candidates.length - 1) {
+            setDirection(1);
             setCurrentIndex(currentIndex + 1);
         } else {
             console.log("Vote for", candidates[currentIndex]);
@@ -193,6 +204,30 @@ const Paslon = ({pairs}) => {
     }
 
     const currentCandidate = candidates[currentIndex];
+
+    // Variants untuk animasi slide
+    const slideVariants = {
+        enter: (direction) => ({
+            x: direction > 0 ? 300 : -300,  // Dari kanan jika next, kiri jika prev
+            opacity: 0,
+        }),
+        center: {
+            x: 0,
+            opacity: 1,
+            transition: {
+                x: { type: "spring", stiffness: 300, damping: 30 },
+                opacity: { duration: 0.3 },
+            },
+        },
+        exit: (direction) => ({
+            x: direction > 0 ? -300 : 300,  // Keluar ke kiri jika next, kanan jika prev
+            opacity: 0,
+            transition: {
+                x: { type: "spring", stiffness: 300, damping: 30 },
+                opacity: { duration: 0.3 },
+            },
+        }),
+    };
 
     return (
         <div
@@ -253,90 +288,103 @@ const Paslon = ({pairs}) => {
             {/* ----- CONTENT CARD ----- */}
             <div className="min-h-screen flex justify-center items-center py-6">
                 <div className="relative z-10 w-full max-w-[1100px] mx-6">
-                    <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 flex flex-col gap-4 border border-white/10">
-                        <h1 className="text-5xl mb-6 font-bold text-center font-genshin">
-                            {currentCandidate.name}
-                        </h1>
+                    <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 flex flex-col gap-4 border border-white/10 overflow-hidden">  {/* Overflow hidden untuk clip animasi */}
+                        {/* Animasi hanya pada bagian ini */}
+                        <AnimatePresence initial={false} custom={direction} mode="wait">
+                            <motion.div
+                                key={currentCandidate.id || currentIndex}  // Key unik agar trigger animasi
+                                custom={direction}
+                                variants={slideVariants}
+                                initial="enter"
+                                animate="center"
+                                exit="exit"
+                                className="flex flex-col gap-4"
+                            >
+                                <h1 className="text-5xl mb-6 font-bold text-center font-genshin">
+                                    {currentCandidate.name}
+                                </h1>
 
-                        <div className="flex flex-col md:flex-row items-start gap-6">
-                            {/* Gambar + Label */}
-                            <div className="relative w-full md:w-[40%]">
-                                <img
-                                    src={`/paslon/paslon_${currentCandidate.id}.jpg`}
-                                    alt={currentCandidate.name}
-                                    className="w-full h-auto max-h-[600px] rounded-xl bg-black/10"
-                                />
+                                <div className="flex flex-col md:flex-row items-start gap-6">
+                                    {/* Gambar + Label */}
+                                    <div className="relative w-full md:w-[40%]">
+                                        <img
+                                            src={`/paslon/paslon_${currentCandidate.id}.jpg`}
+                                            alt={currentCandidate.name}
+                                            className="w-full h-auto max-h-[600px] rounded-xl bg-black/10"
+                                        />
 
-                                {/* Label Ketua & Wakil */}
-                                <div
-                                    className="
+                                        {/* Label Ketua & Wakil */}
+                                        <div
+                                            className="
                                     absolute inset-x-0 bottom-4
                                     flex flex-col items-center gap-2
                                     sm:flex-row sm:justify-between sm:items-end
                                     px-4
                                 "
-                                >
-                                    {/* Ketua */}
-                                    <div
-                                        className="
+                                        >
+                                            {/* Ketua */}
+                                            <div
+                                                className="
                                     bg-primary text-white px-4 py-2
                                     rounded-2xl text-center shadow-md text-sm font-semibold
                                     sm:w-[48%] w-[80%]
                                     "
-                                    >
-                                        Ketua
-                                        <br />
-                                        <span className="font-normal">
-                                            {currentCandidate.ketua}
-                                        </span>
-                                    </div>
+                                            >
+                                                Ketua
+                                                <br />
+                                                <span className="font-normal">
+                                                    {currentCandidate.ketua}
+                                                </span>
+                                            </div>
 
-                                    {/* Wakil */}
-                                    <div
-                                        className="
+                                            {/* Wakil */}
+                                            <div
+                                                className="
               bg-primary text-white px-4 py-2
               rounded-2xl text-center shadow-md text-sm font-semibold
               sm:w-[48%] w-[80%]
             "
-                                    >
-                                        Wakil
-                                        <br />
-                                        <span className="font-normal">
-                                            {currentCandidate.wakil}
-                                        </span>
+                                            >
+                                                Wakil
+                                                <br />
+                                                <span className="font-normal">
+                                                    {currentCandidate.wakil}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* VISI & MISI */}
+                                    <div className="flex flex-col gap-6 w-full md:w-[60%] mt-4 md:mt-0">
+                                        <div className="relative">
+                                            <span className="absolute -top-3 left-4 bg-primary text-white px-3 py-1 rounded-2xl text-sm shadow-md z-10">
+                                                VISI
+                                            </span>
+                                            <div className="bg-white text-black pt-6 pb-4 px-4 rounded-xl shadow-md">
+                                                <p>{currentCandidate.visi}</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="relative">
+                                            <span className="absolute -top-3 left-4 bg-primary text-white px-3 py-1 rounded-2xl text-sm shadow-md z-10">
+                                                MISI
+                                            </span>
+                                            <div className="bg-white text-black pt-6 pb-4 px-4 rounded-xl shadow-md">
+                                                <ol className="list-decimal pl-5 flex flex-col gap-1">
+                                                    {currentCandidate.misi.map(
+                                                        (item, idx) => (
+                                                            <li key={idx}>{item}</li>
+                                                        )
+                                                    )}
+                                                </ol>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </motion.div>
+                        </AnimatePresence>
 
-                            {/* VISI & MISI */}
-                            <div className="flex flex-col gap-6 w-full md:w-[60%] mt-4 md:mt-0">
-                                <div className="relative">
-                                    <span className="absolute -top-3 left-4 bg-primary text-white px-3 py-1 rounded-2xl text-sm shadow-md z-10">
-                                        VISI
-                                    </span>
-                                    <div className="bg-white text-black pt-6 pb-4 px-4 rounded-xl shadow-md">
-                                        <p>{currentCandidate.visi}</p>
-                                    </div>
-                                </div>
-
-                                <div className="relative">
-                                    <span className="absolute -top-3 left-4 bg-primary text-white px-3 py-1 rounded-2xl text-sm shadow-md z-10">
-                                        MISI
-                                    </span>
-                                    <div className="bg-white text-black pt-6 pb-4 px-4 rounded-xl shadow-md">
-                                        <ol className="list-decimal pl-5 flex flex-col gap-1">
-                                            {currentCandidate.misi.map(
-                                                (item, idx) => (
-                                                    <li key={idx}>{item}</li>
-                                                )
-                                            )}
-                                        </ol>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Navigasi */}
+                        {/* Navigasi (di luar animasi agar tetap statis) */}
                         <div className="flex justify-between mt-2">
                             <button
                                 onClick={handlePrev}
