@@ -17,7 +17,7 @@ class StudentImport implements ToModel, WithHeadingRow
     */
     public function model(array $row)
     {
-        $plainPassword = Str::password(16, true, true, false, false);
+        $plainPassword = Str::password(6, true, false, false, false);
         $hashedPassword = Hash::driver('bcrypt')->setRounds(4)->make($plainPassword);
         return new Voter([
             'name'     => $row['nama'],

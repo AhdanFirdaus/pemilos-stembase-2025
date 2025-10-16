@@ -18,15 +18,17 @@ class TeacherImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
 
-        $plainPassword = Str::password(16, true, true, false, false);
-
+        $plainPassword = Str::password(6, true, false, false, false);
+        $hashedPassword = Hash::driver('bcrypt')->setRounds(4)->make($plainPassword);
+        $fake_id = Str::password(6, false, true, false, false);
+        // dd($plainPassword);
         return new Voter([
             'name'     => $row['nama'],
-            'identifier'    => $row['identifier'],
+            'identifier'  => $fake_id,
             'kelas'    => '',
             'tipe'    => 'guru',
             'status'    => 'belum',
-            'password' => Hash::make($plainPassword),
+            'password' => $hashedPassword,
             'plain_password' => $plainPassword
         ]);
     }
