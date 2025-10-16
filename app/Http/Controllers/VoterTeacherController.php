@@ -18,11 +18,23 @@ class VoterTeacherController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $teachers = Voter::where('tipe','guru')->get();
+        $query = Voter::where('tipe','guru');
+
+        if ($search = $request->search) {
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                ->orWhere('identifier', 'like', "%{$search}%")
+                ->orWhere('status', 'like', "%{$search}%");
+            });
+        }
+
+        $teachers = $query->get();
+
         return inertia('Admin/Teacher', [
-            'teachers' => $teachers
+            'teachers' => $teachers,
+            'filters' => $request->only(['search'])
         ]);
     }
 

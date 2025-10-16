@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Wrapper from "../../Components/Layouts/Wrapper";
 import Card from "../../Components/Elements/Card";
 import Table from "../../Components/Elements/Table";
@@ -10,38 +10,51 @@ import Alert from "../../Components/Elements/Alert";
 import ActionMenu from "../../Components/Elements/ActionMenu";
 import { router } from "@inertiajs/react";
 
-export default function Student({ students = [] }) {
+export default function Student({ students, filters }) {
   const [openForm, setOpenForm] = useState(false);
   const [editingData, setEditingData] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [showSuccess, setShowSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const [searchTerm, setSearchTerm] = useState(filters.search || "");
 
-  const [data, setData] = useState(
-    students.map((student) => {
-      console.log("Mapping students:", student); // Debug: Inspect students structure
-      return {
-        id: student.id,
-        nama: student.name || "",
-        kelas: student.kelas || "",
-        nis: student.identifier || "",
-        pass: student.plain_password || "",
-        status: student.status || "Belum",
-        showPass: false,
-      };
-    })
-  );
+  const [currentData, setCurrentData] = useState([]);
+
+  useEffect(() => {
+    setCurrentData(
+      students.data.map((student) => {
+        console.log("Mapping students:", student); // Debug: Inspect students structure
+        return {
+          id: student.id,
+          nama: student.name || "",
+          kelas: student.kelas || "",
+          nis: student.identifier || "",
+          pass: student.plain_password || "",
+          status: student.status || "Belum",
+          showPass: false,
+        };
+      })
+    );
+  }, [students]);
 
   const fileInputRef = useRef(null);
 
   const togglePassword = (id) => {
-    setData((prevData) =>
+    setCurrentData((prevData) =>
       prevData.map((row) =>
         row.id === id ? { ...row, showPass: !row.showPass } : row
       )
+    );
+  };
+
+  const handleSearchChange = (e) => {
+    const term = e.target.value;
+    setSearchTerm(term);
+    router.get(
+      window.location.pathname,
+      { search: term, page: 1 },
+      { replace: true, preserveState: true, preserveScroll: true }
     );
   };
 
@@ -67,6 +80,7 @@ export default function Student({ students = [] }) {
       },
       onSuccess: () => {
         console.log("Import berhasil");
+        router.reload();
       },
       onError: (errors) => {
         console.error("Import gagal", errors);
@@ -78,27 +92,56 @@ export default function Student({ students = [] }) {
   };
 
   const handleDeleteAll = () => {
-    setData([]);
     setShowAlert(false);
     setSuccessMessage("Semua data siswa berhasil dihapus.");
-    router.delete('/admin/siswaall')
+    router.delete('/admin/siswaall', {
+      onSuccess: () => {
+        router.reload();
+      }
+    });
     setShowSuccess(true);
   };
 
   const handleDeleteOne = (id, nama) => {
-    setData((prev) => prev.filter((row) => row.id !== id));
     setDeleteTarget(null);
     setShowAlert(false);
-    router.delete(`/admin/guru/${id}`)
-    setSuccessMessage(`Data ${nama} berhasil dihapus.`);
-    setShowSuccess(true);
+    router.delete(`/admin/siswa/${id}`, {
+      onSuccess: () => {
+        setSuccessMessage(`Data ${nama} berhasil dihapus.`);
+        setShowSuccess(true);
+        router.reload();
+      }
+    });
   };
 
-  // Pagination state
-  const indexOfLast = currentPage * itemsPerPage;
-  const indexOfFirst = indexOfLast - itemsPerPage;
-  const currentData = data.slice(indexOfFirst, indexOfLast);
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const getPageNumbers = () => {
+    const total = students.last_page;
+    const current = students.current_page;
+    const delta = 3;
+
+    const pages = [1];
+
+    const left = Math.max(2, current - delta);
+    const right = Math.min(total - 1, current + delta);
+
+    if (left > 2) {
+      pages.push('...');
+    }
+
+    for (let i = left; i <= right; i++) {
+      pages.push(i);
+    }
+
+    if (right < total - 1) {
+      pages.push('...');
+    }
+
+    if (total > 1) {
+      pages.push(total);
+    }
+
+    return pages;
+  };
 
   const columns = [
     { key: "id", header: "No" },
@@ -170,7 +213,7 @@ export default function Student({ students = [] }) {
         <div className="flex flex-col gap-4 mb-4">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
             <h2 className="text-xl font-semibold">
-              Semua Siswa <span className="text-gray-500">{data.length}</span>
+              Semua Siswa <span className="text-gray-500">{students.total}</span>
             </h2>
             <div className="flex flex-wrap gap-3 justify-end">
               <div>
@@ -203,7 +246,11 @@ export default function Student({ students = [] }) {
           </div>
 
           <div className="flex flex-wrap items-center justify-end gap-3">
-            <SearchInput placeholder="Cari" />
+            <SearchInput 
+              placeholder="Cari" 
+              value={searchTerm}
+              onChange={handleSearchChange}
+            />
             <Button
               variant="primary"
               onClick={() => {
@@ -226,43 +273,51 @@ export default function Student({ students = [] }) {
           <p className="text-sm text-gray-500">
             Menampilkan{" "}
             <b>
-              {indexOfFirst + 1}-{Math.min(indexOfLast, data.length)}
+              {((students.current_page - 1) * students.per_page) + 1}-{Math.min(((students.current_page - 1) * students.per_page) + students.per_page, students.total)}
             </b>{" "}
-            dari <b>{data.length}</b> hasil
+            dari <b>{students.total}</b> hasil
           </p>
           <div className="flex gap-2 items-center">
             <button
-              disabled={currentPage === 1 || data.length < 10}
-              onClick={() => setCurrentPage((p) => p - 1)}
+              disabled={!students.prev_page_url}
+              onClick={() => router.visit(students.prev_page_url, { preserveState: true })}
               className={`w-10 h-10 flex items-center justify-center rounded-md border transition
                 ${
-                  currentPage === 1 || data.length < 10
+                  !students.prev_page_url
                     ? "bg-gray-200 text-gray-400 cursor-not-allowed grayscale"
                     : "bg-white hover:bg-gray-100 text-gray-700 border-gray-300"
                 }`}
             >
               <ChevronLeft size={18} />
             </button>
-            {[...Array(totalPages)].map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentPage(i + 1)}
-                className={`px-3 py-1 rounded-md text-sm font-medium transition
-                  ${
-                    currentPage === i + 1
-                      ? "bg-[#C8B6FF] text-white"
-                      : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-100"
-                  }`}
-              >
-                {i + 1}
-              </button>
+            {getPageNumbers().map((page, index) => (
+              page === '...' ? (
+                <span key={index} className="px-3 py-1 text-sm text-gray-500">...</span>
+              ) : (
+                <button
+                  key={page}
+                  onClick={() => router.get(
+                    window.location.pathname,
+                    { page: page, search: searchTerm },
+                    { preserveState: true, replace: true }
+                  )}
+                  className={`px-3 py-1 rounded-md text-sm font-medium transition
+                    ${
+                      students.current_page === page
+                        ? "bg-[#C8B6FF] text-white"
+                        : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-100"
+                    }`}
+                >
+                  {page}
+                </button>
+              )
             ))}
             <button
-              disabled={currentPage === totalPages || data.length < 10}
-              onClick={() => setCurrentPage((p) => p + 1)}
+              disabled={!students.next_page_url}
+              onClick={() => router.visit(students.next_page_url, { preserveState: true })}
               className={`w-10 h-10 flex items-center justify-center rounded-md border transition
                 ${
-                  currentPage === totalPages || data.length < 10
+                  !students.next_page_url
                     ? "bg-gray-200 text-gray-400 cursor-not-allowed grayscale"
                     : "bg-white hover:bg-gray-100 text-gray-700 border-gray-300"
                 }`}
@@ -286,6 +341,7 @@ export default function Student({ students = [] }) {
                 : `Data ${nama} berhasil diperbarui.`
             );
             setShowSuccess(true);
+            router.reload();
           }}
         />
       )}

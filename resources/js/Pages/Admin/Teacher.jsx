@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Wrapper from "../../Components/Layouts/Wrapper";
 import Card from "../../Components/Elements/Card";
 import Table from "../../Components/Elements/Table";
@@ -8,9 +8,9 @@ import { Eye, EyeOff, Upload, Download, Trash2, ChevronLeft, ChevronRight } from
 import FormGuru from "../../Components/Fragments/FormGuru";
 import Alert from "../../Components/Elements/Alert";
 import ActionMenu from "../../Components/Elements/ActionMenu";
-import { router } from '@inertiajs/react';
+import { router } from "@inertiajs/react";
 
-export default function Teacher({ teachers }) {
+export default function Teacher({ teachers, filters }) {
   const [openForm, setOpenForm] = useState(false);
   const [editingData, setEditingData] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
@@ -18,21 +18,27 @@ export default function Teacher({ teachers }) {
   const [showSuccess, setShowSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState(filters.search || "");
   const itemsPerPage = 10;
 
-  const [data, setData] = useState(
-    teachers.map((teacher) => {
-      console.log("Mapping teachers:", teacher); // Debug: Inspect teachers structure
-      return {
-        id: teacher.id,
-        nama: teacher.name || "",
-        nip: teacher.identifier || "",
-        pass: teacher.plain_password || "",
-        status: teacher.status || "Belum",
-        showPass: false,
-      };
-    })
-  );
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    setData(
+      teachers.map((teacher) => {
+        console.log("Mapping teachers:", teacher); // Debug: Inspect teachers structure
+        return {
+          id: teacher.id,
+          nama: teacher.name || "",
+          nip: teacher.identifier || "",
+          pass: teacher.plain_password || "",
+          status: teacher.status || "Belum",
+          showPass: false,
+        };
+      })
+    );
+    setCurrentPage(1);
+  }, [teachers]);
 
   const fileInputRef = useRef(null);
 
@@ -44,9 +50,18 @@ export default function Teacher({ teachers }) {
     );
   };
 
-  const handleImportClick = () => {
-    fileInputRef.current?.click();
+  const handleSearchChange = (e) => {
+    const term = e.target.value;
+    setSearchTerm(term);
+    setCurrentPage(1);
+    router.get(
+      window.location.pathname,
+      { search: term },
+      { replace: true, preserveState: true, preserveScroll: true }
+    );
   };
+
+  const handleImportClick = () => fileInputRef.current?.click();
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
@@ -68,6 +83,7 @@ export default function Teacher({ teachers }) {
       },
       onSuccess: () => {
         console.log("Import berhasil");
+        router.reload();
       },
       onError: (errors) => {
         console.error("Import gagal", errors);
@@ -78,22 +94,27 @@ export default function Teacher({ teachers }) {
     });
   };
 
-
   const handleDeleteAll = () => {
-    setData([]);
     setShowAlert(false);
     setSuccessMessage("Semua data guru berhasil dihapus.");
-    router.delete(`/admin/guruall`);
+    router.delete(`/admin/guruall`, {
+      onSuccess: () => {
+        router.reload();
+      }
+    });
     setShowSuccess(true);
   };
 
   const handleDeleteOne = (id, nama) => {
-    setData((prev) => prev.filter((row) => row.id !== id));
     setDeleteTarget(null);
     setShowAlert(false);
-    router.delete(`/admin/guru/${id}`);
-    setSuccessMessage(`Data ${nama} berhasil dihapus.`);
-    setShowSuccess(true);
+    router.delete(`/admin/guru/${id}`, {
+      onSuccess: () => {
+        setSuccessMessage(`Data ${nama} berhasil dihapus.`);
+        setShowSuccess(true);
+        router.reload();
+      }
+    });
   };
 
   // Pagination logic
@@ -101,6 +122,35 @@ export default function Teacher({ teachers }) {
   const indexOfFirst = indexOfLast - itemsPerPage;
   const currentData = data.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(data.length / itemsPerPage);
+
+  const getPageNumbers = () => {
+    const total = totalPages;
+    const current = currentPage;
+    const delta = 3;
+
+    const pages = [1];
+
+    const left = Math.max(2, current - delta);
+    const right = Math.min(total - 1, current + delta);
+
+    if (left > 2) {
+      pages.push('...');
+    }
+
+    for (let i = left; i <= right; i++) {
+      pages.push(i);
+    }
+
+    if (right < total - 1) {
+      pages.push('...');
+    }
+
+    if (total > 1) {
+      pages.push(total);
+    }
+
+    return pages;
+  };
 
   const columns = [
     { key: "id", header: "No" },
@@ -204,7 +254,11 @@ export default function Teacher({ teachers }) {
           </div>
 
           <div className="flex flex-wrap items-center justify-end gap-3">
-            <SearchInput placeholder="Cari" />
+            <SearchInput 
+              placeholder="Cari" 
+              value={searchTerm}
+              onChange={handleSearchChange}
+            />
             <Button
               variant="primary"
               onClick={() => {
@@ -233,37 +287,41 @@ export default function Teacher({ teachers }) {
           </p>
           <div className="flex gap-2 items-center">
             <button
-              disabled={currentPage === 1 || data.length < 10}
+              disabled={currentPage === 1}
               onClick={() => setCurrentPage((p) => p - 1)}
               className={`w-10 h-10 flex items-center justify-center rounded-md border transition
                 ${
-                  currentPage === 1 || data.length < 10
+                  currentPage === 1
                     ? "bg-gray-200 text-gray-400 cursor-not-allowed grayscale"
                     : "bg-white hover:bg-gray-100 text-gray-700 border-gray-300"
                 }`}
             >
               <ChevronLeft size={18} />
             </button>
-            {[...Array(totalPages)].map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentPage(i + 1)}
-                className={`px-3 py-1 rounded-md text-sm font-medium transition
-                  ${
-                    currentPage === i + 1
-                      ? "bg-[#C8B6FF] text-white"
-                      : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-100"
-                  }`}
-              >
-                {i + 1}
-              </button>
+            {getPageNumbers().map((page, index) => (
+              page === '...' ? (
+                <span key={index} className="px-3 py-1 text-sm text-gray-500">...</span>
+              ) : (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`px-3 py-1 rounded-md text-sm font-medium transition
+                    ${
+                      currentPage === page
+                        ? "bg-[#C8B6FF] text-white"
+                        : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-100"
+                    }`}
+                >
+                  {page}
+                </button>
+              )
             ))}
             <button
-              disabled={currentPage === totalPages || data.length < 10}
+              disabled={currentPage === totalPages}
               onClick={() => setCurrentPage((p) => p + 1)}
               className={`w-10 h-10 flex items-center justify-center rounded-md border transition
                 ${
-                  currentPage === totalPages || data.length < 10
+                  currentPage === totalPages
                     ? "bg-gray-200 text-gray-400 cursor-not-allowed grayscale"
                     : "bg-white hover:bg-gray-100 text-gray-700 border-gray-300"
                 }`}
@@ -287,6 +345,7 @@ export default function Teacher({ teachers }) {
                 : `Data ${nama} berhasil diperbarui.`
             );
             setShowSuccess(true);
+            router.reload();
           }}
         />
       )}
@@ -314,8 +373,8 @@ export default function Teacher({ teachers }) {
             : handleDeleteAll()
         }
         onCancel={() => {
-          setDeleteTarget(null);
           setShowAlert(false);
+          setDeleteTarget(null);
         }}
       />
 
