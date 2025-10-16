@@ -261,6 +261,9 @@ const Home = () => {
                         animationDelay: "2.2s",
                         animationFillMode: "forwards",
                     }}
+                    onClick={() => {
+                        window.location.href = '/auth/login'
+                    }}
                 >
                     Lanjut
                 </button>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Middleware\AdminLogin;
 use App\Http\Middleware\PreventMultipleVotes;
 use Illuminate\Support\Facades\Route;
@@ -21,14 +22,12 @@ Route::middleware([PreventMultipleVotes::class])->group(function () {
         ->group(function () {
             require_once __DIR__ . '/voter/vote.php';
         });
-        Route::get('/voter/paslon', function () {
-            return inertia('Votes/Paslon');
-        });
+    Route::resource('dashboard',DashboardController::class);
     });
     
 Route::get('/', function () {
         return inertia('Home');
-});
+})->name('index');
 
 Route::prefix('/auth')
     ->name('auth')

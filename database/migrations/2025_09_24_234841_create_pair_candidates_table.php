@@ -22,8 +22,8 @@ return new class extends Migration
             $table->foreign('co_leader_id')->references('id')->on('candidates')->onDelete('cascade');
             $table->string('photo_path');
             $table->string('pair_number');
-            $table->string('vision');
-            $table->string('mission');
+            $table->text('vision');
+            $table->text('mission');
         
             $table->timestamps();
         });

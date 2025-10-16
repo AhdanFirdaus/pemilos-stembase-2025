@@ -21,7 +21,7 @@ class PreventMultipleVotes
         // If not logged in, redirect to login
         // dd('tes');
         if (!$voter) {
-            return redirect()->route('authlogin.index')->withErrors([
+            return redirect()->route('index')->withErrors([
                 'messages' => 'You Have already voted!'
             ]);
         }

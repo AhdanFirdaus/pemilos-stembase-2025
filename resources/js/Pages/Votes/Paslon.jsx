@@ -13,7 +13,7 @@ import {
     CheckCircle,
 } from "lucide-react";
 
-const Paslon = () => {
+const Paslon = ({pairs}) => {
     const [candidates, setCandidates] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const iconInnerRefs = useRef([]);
@@ -127,10 +127,7 @@ const Paslon = () => {
 
     // Fetch data from data.json
     useEffect(() => {
-        fetch("/data.json")
-            .then((response) => response.json())
-            .then((data) => setCandidates(data))
-            .catch((error) => console.error("Error fetching data:", error));
+        setCandidates(pairs);
     }, []);
 
     // cursor following (throttle via requestAnimationFrame)

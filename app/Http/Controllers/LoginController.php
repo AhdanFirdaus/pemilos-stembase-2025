@@ -14,7 +14,7 @@ class LoginController extends Controller
     public function index()
     {
         if (Auth::guard('voter')->check()) {
-            return redirect('/');
+            return redirect('/dashboard');
         }
         return inertia('Auth/Login');
     }

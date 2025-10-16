@@ -21,6 +21,12 @@ class AdminLogin
                 'messages' => 'You are not admin yet'
             ]);
         }
+        $isVoter = auth('voter')->user();
+        if ($isVoter) {
+            return redirect()->route('index')->withErrors([
+                'messages' => 'YOU ARE VOTER'
+            ]);
+        }
         return $next($request);
     }
 }

@@ -201,7 +201,7 @@ const Votes = () => {
     };
 
     const handleBack = () => {
-        window.location.href = "/";
+        window.location.href = "/dashboard";
     };
 
     if (candidates.length === 0) {
