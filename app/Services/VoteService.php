@@ -42,19 +42,41 @@ class VoteService {
         ];
     }
 
-    public function generate_bar_data()
-    {
-        $candidates = \App\Models\PairCandidate::all();
+    public function generate_bar_data($role)
+{
+    $tipe = $role;
+    $candidates = \App\Models\PairCandidate::all();
 
+    // If role is 'all', count all votes
+    if ($tipe === 'all') {
         return $candidates->map(function ($candidate) {
-        $count = \App\Models\Vote::where('pair_candidate_id', $candidate->id)->count();
+            $count = \App\Models\Vote::where('pair_candidate_id', $candidate->id)->count();
 
+            return [
+                'name' => 'Paslon ' . $candidate->pair_number,
+                'value' => $count,
+            ];
+        })->values()->toArray();
+    }
+
+    // Otherwise, count only votes where Voter->tipe == $tipe
+    $votesPerCandidate = \App\Models\Vote::whereHas('voter', function ($query) use ($tipe) {
+        $query->where('tipe', $tipe);
+    })
+    ->selectRaw('pair_candidate_id, COUNT(*) as total')
+    ->groupBy('pair_candidate_id')
+    ->pluck('total', 'pair_candidate_id'); 
+    // 👆 gives key-value pairs like [candidate_id => total_votes]
+
+    // Map all candidates, including those with 0 votes
+    return $candidates->map(function ($candidate) use ($votesPerCandidate) {
+        $count = $votesPerCandidate[$candidate->id] ?? 0; // default 0 if no votes
         return [
             'name' => 'Paslon ' . $candidate->pair_number,
             'value' => $count,
         ];
-        })->values()->toArray(); // 👈 convert collection to plain array
-    }
+    })->values()->toArray();
+}
 
     /**
      * Generate pie chart data (voted vs not voted) as percentages.
@@ -64,7 +86,7 @@ class VoteService {
         $totalVoters = $total['total'] ?? 0;
         $voted = $total['voted'] ?? 0;
         $notVoted = $total['not_voted'] ?? 0;
-
+        // dd($total);
         return [
             [
                 'name' => 'Sudah Memilih',

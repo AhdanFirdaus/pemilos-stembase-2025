@@ -21,11 +21,12 @@ class VoteController extends Controller
         $siswa = $this->service->get_student();
         $guru = $this->service->get_teacher();
         $pieDataTotal = $this->service->generate_pie_data($total);
-        $barDataTotal = $this->service->generate_bar_data($total);
+        $barDataTotal = $this->service->generate_bar_data('all');
         $pieDataSiswa = $this->service->generate_pie_data($siswa);
-        $barDataSiswa = $this->service->generate_bar_data($siswa);
+        $barDataSiswa = $this->service->generate_bar_data('siswa');
         $pieDataGuru = $this->service->generate_pie_data($guru);
-        $barDataGuru = $this->service->generate_bar_data($guru);
+        $barDataGuru = $this->service->generate_bar_data('guru');
+        // dd($barDataGuru);
         $datas = [
             "total" => [
                 'total' => $total,

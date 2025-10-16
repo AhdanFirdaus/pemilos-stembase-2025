@@ -190,6 +190,7 @@ export default function Paslon({ pairCandidates = [] }) {
                 : `Data paslon ${name} berhasil diperbarui.`
             );
             setShowSuccess(true);
+            console.log("tess")
           }}
         />
       )}

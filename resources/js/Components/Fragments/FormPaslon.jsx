@@ -5,49 +5,71 @@ import { X } from "lucide-react";
 import { useForm } from "@inertiajs/react";
 
 export default function FormPaslon({ onClose, initialData, onSuccess }) {
-  console.log("FormPaslon initialData:", initialData); // Debug: Inspect initialData
-  // console.table(initialData)
+  console.log("FormPaslon initialData:", initialData);
 
   const isEditing = !!initialData?.id;
 
-  const { data, setData, post, put, processing, errors } = useForm({
-    ketua_nama: initialData?.ketua || "",
+  const { data, setData, post, processing, errors } = useForm({
+    ketua_nama: initialData?.ketua || initialData?.ketua_nama || "",
     ketua_nis: initialData?.ketua_nis || "",
     ketua_kelas: initialData?.ketua_kelas || "",
-    wakil_nama: initialData?.wakil || "",
+    wakil_nama: initialData?.wakil || initialData?.wakil_nama || "",
     wakil_nis: initialData?.wakil_nis || "",
     wakil_kelas: initialData?.wakil_kelas || "",
-    no_paslon: initialData?.pair_number || "", // Ensure string
+    no_paslon: initialData?.pair_number || initialData?.no_paslon || "",
     foto: null,
-    visi: initialData?.vision || "",
-    misi: initialData?.mission || "",
-    ...(initialData && {_method: 'PUT'})
+    visi: initialData?.vision || initialData?.visi || "",
+    misi: initialData?.mission || initialData?.misi || "",
+    ...(isEditing && { _method: 'PUT' }) // Add _method for editing
   });
 
   const handleSubmit = (e) => {
-  e.preventDefault();
-  const formData = new FormData(e.target);
-  for (let [key, value] of formData.entries()) {
-    console.log(`${key}:`, value);
-  }
-  console.log("Submitting data:", data);
-  console.log("Foto object:", data.foto);
+    e.preventDefault();
+    
+    console.log("Submitting data:", data);
+    console.log("Is editing:", isEditing);
 
-  if (isEditing) {
-    post(`/admin/paslon/${initialData.id}`, {
-      forceFormData: true,
-    })
-  } else {
-    post("/admin/paslon", data, {
-      forceFormData: true,
-      onSuccess: () => {
-        onClose();
-        onSuccess("add", `${data.ketua_nama} & ${data.wakil_nama}`);
-      },
+    // Create FormData for file upload
+    const formData = new FormData();
+    Object.keys(data).forEach(key => {
+      if (key === 'foto' && data.foto) {
+        formData.append(key, data.foto);
+      } else if (data[key] !== null && data[key] !== undefined) {
+        formData.append(key, data[key]);
+      }
     });
-  }
-};
 
+    const successCallback = () => {
+      onClose();
+      onSuccess(
+        isEditing ? "edit" : "add", 
+        `${data.ketua_nama} & ${data.wakil_nama}`
+      );
+    };
+
+    if (isEditing) {
+      // Use POST with _method: 'PUT' for file uploads
+      post(`/admin/paslon/${initialData.id}`, {
+        data: formData,
+        forceFormData: true,
+        preserveScroll: false,
+        onSuccess: successCallback,
+        onError: (errors) => {
+          console.log("Edit errors:", errors);
+        }
+      });
+    } else {
+      post("/admin/paslon", {
+        data: formData,
+        forceFormData: true,
+        preserveScroll: false,
+        onSuccess: successCallback,
+        onError: (errors) => {
+          console.log("Create errors:", errors);
+        }
+      });
+    }
+  };
 
   const handleFileChange = (e) => {
     setData("foto", e.target.files[0]);
@@ -73,10 +95,11 @@ export default function FormPaslon({ onClose, initialData, onSuccess }) {
         </button>
 
         {/* Form Content */}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} encType="multipart/form-data">
           <h2 className="text-lg font-bold mb-4 text-purple-700">
             {isEditing ? "Edit Paslon" : "Tambah Paslon"}
           </h2>
+          
           <h3 className="text-md font-semibold mb-2 text-purple-600">Data Ketua</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div>
@@ -188,11 +211,11 @@ export default function FormPaslon({ onClose, initialData, onSuccess }) {
 
           {/* Action Buttons */}
           <div className="flex justify-end gap-3">
-            <Button variant="secondary" onClick={onClose}>
+            <Button type="button" variant="secondary" onClick={onClose}>
               Batal
             </Button>
             <Button variant="primary" type="submit" disabled={processing}>
-              {isEditing ? "Simpan" : "Tambah"}
+              {processing ? "Loading..." : isEditing ? "Simpan" : "Tambah"}
             </Button>
           </div>
         </form>

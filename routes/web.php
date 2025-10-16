@@ -17,16 +17,16 @@ Route::middleware([AdminLogin::class])->group(function () {
 });
 
 Route::middleware([PreventMultipleVotes::class])->group(function () {
-});
-Route::prefix('/')
-    ->name('voter')
-    ->group(function () {
-        require_once __DIR__ . '/voter/vote.php';
+    Route::prefix('/')
+        ->name('voter')
+        ->group(function () {
+            require_once __DIR__ . '/voter/vote.php';
+            Route::resource('dashboard',DashboardController::class);
     });
-Route::resource('dashboard',DashboardController::class);
+});
     
-    Route::get('/', function () {
-        return inertia('Home');
+Route::get('/', function () {
+    return inertia('Home');
 })->name('index');
 
 Route::prefix('/auth')

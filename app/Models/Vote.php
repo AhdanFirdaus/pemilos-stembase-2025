@@ -10,4 +10,11 @@ class Vote extends Model
         'pair_candidate_id',
         'voter_id',
     ];
+    public function pair() {
+        return $this->belongsTo(Voter::class,'pair_candidate_id');
+    }
+
+    public function voter() {
+        return $this->belongsTo(Voter::class, 'voter_id');
+    }
 }

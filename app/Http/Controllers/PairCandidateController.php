@@ -98,7 +98,7 @@ class PairCandidateController extends Controller
         'pair_number' => $request->no_paslon,
     ]);
 
-    return redirect()->back()->with('success', 'Kandidat berhasil ditambahkan');
+    return back()->with('success', 'Kandidat berhasil ditambahkan');
     }
 
 
