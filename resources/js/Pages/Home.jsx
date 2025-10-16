@@ -8,9 +8,6 @@ import {
     Shell,
     Asterisk,
     Earth,
-    ChevronLeft,
-    ChevronRight,
-    CheckCircle,
 } from "lucide-react";
 
 const Home = () => {
@@ -25,7 +22,6 @@ const Home = () => {
         }
     };
 
-    // daftar ikon (posisi awal & depth untuk parallax)
     const icons = [
         {
             Icon: Star,
@@ -91,17 +87,9 @@ const Home = () => {
             depth: 0.08,
             dur: 2500,
         },
-        {
-            Icon: Sun,
-            size: 20,
-            top: "5%",
-            left: "45%",
-            depth: 0.05,
-            dur: 6000,
-        },
+        { Icon: Sun, size: 20, top: "5%", left: "45%", depth: 0.05, dur: 6000 },
     ];
 
-    // Blobs konfigurasi (posisi, ukuran, opasitas, durasi)
     const blobs = [
         { top: "60%", left: "78%", size: 420, op: 0.38, dur: 5000, delay: 0 },
         {
@@ -125,19 +113,8 @@ const Home = () => {
         { top: "82%", left: "86%", size: 260, op: 0.2, dur: 4500, delay: 1600 },
     ];
 
-    // Fetch data from data.json
-    useEffect(() => {
-        fetch("/data.json")
-            .then((response) => response.json())
-            .then((data) => setCandidates(data))
-            .catch((error) => console.error("Error fetching data:", error));
-    }, []);
-
-    // cursor following (throttle via requestAnimationFrame)
     useEffect(() => {
         let raf = null;
-
-        // Simpan posisi saat ini untuk tiap icon
         const positions = icons.map(() => ({ x: 0, y: 0 }));
 
         const onMove = (e) => {
@@ -154,16 +131,10 @@ const Home = () => {
                     const amp = 30;
                     const tx = dx * amp * depth * 40;
                     const ty = dy * amp * depth * 40;
-
-                    // posisi sekarang
                     const p = positions[idx];
-                    // smoothing factor (0.1 lebih lambat, 0.3 lebih cepat)
                     const smooth = 0.12;
-
-                    // gerak perlahan menuju target
                     p.x += (tx - p.x) * smooth;
                     p.y += (ty - p.y) * smooth;
-
                     el.style.transform = `translate3d(${p.x}px, ${p.y}px, 0)`;
                 });
             });
@@ -176,33 +147,12 @@ const Home = () => {
         };
     }, []); // eslint-disable-line
 
-    const handlePrev = () => {
-        if (currentIndex > 0) {
-            setCurrentIndex(currentIndex - 1);
-        }
-    };
-
-    const handleNext = () => {
-        if (currentIndex < candidates.length - 1) {
-            setCurrentIndex(currentIndex + 1);
-        } else {
-            console.log("Vote for", candidates[currentIndex]);
-            window.location.href = "/voter/"; // arahkan ke halaman lain
-        }
-    };
-
-    if (candidates.length === 0) {
-        return <div>Loading...</div>;
-    }
-
-    const currentCandidate = candidates[currentIndex];
-
     return (
         <div
             className="relative min-h-screen flex items-center justify-center overflow-hidden text-white"
             style={{ backgroundColor: "var(--color-secondary)" }}
         >
-            {/* ----- BLOBS (loop animation only) ----- */}
+            {/* BLOBS */}
             {blobs.map((b, i) => (
                 <div
                     key={i}
@@ -221,7 +171,7 @@ const Home = () => {
                 />
             ))}
 
-            {/* ----- ICONS: outer has loop animation, inner is moved by cursor (refs) ----- */}
+            {/* ICONS */}
             {icons.map((it, idx) => {
                 const Outer = it.Icon;
                 return (
@@ -232,7 +182,6 @@ const Home = () => {
                             top: it.top,
                             left: it.left,
                             transform: "translate3d(0,0,0)",
-                            // each icon gets slightly different float speed/delay to feel organic
                             animation: `iconFloat ${it.dur}ms ease-in-out ${
                                 idx * 200
                             }ms infinite`,
@@ -242,7 +191,7 @@ const Home = () => {
                             ref={addIconRef}
                             className="flex items-center justify-center"
                             style={{
-                                transform: "translate3d(0,0,0)", // this will be updated by mouse
+                                transform: "translate3d(0,0,0)",
                                 willChange: "transform",
                                 color: "rgba(255,255,255,0.95)",
                             }}
@@ -253,118 +202,71 @@ const Home = () => {
                 );
             })}
 
-            {/* ----- CONTENT CARD ----- */}
-            <div className="min-h-screen flex justify-center items-center py-6">
-                <div className="relative z-10 w-full max-w-[1100px] mx-6">
-                    <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 flex flex-col gap-4 border border-white/10">
-                        <h1 className="text-5xl mb-6 font-bold text-center font-genshin">
-                            {currentCandidate.name}
-                        </h1>
+            {/* CONTENT */}
+            <div className="relative z-10 text-center max-w-4xl mx-auto">
+                {/* Tiga logo dengan posisi kiri-tengah-kanan */}
+                <div className="relative flex justify-center items-center gap-6 mb-8 mt-4">
+                    {/* Logo kiri */}
+                    <img
+                        src="/img/mpk.jpg"
+                        alt="Logo MPK"
+                        className="w-16 h-16 object-contain rounded-2xl opacity-0 animate-logoEnter"
+                        style={{
+                            animationDelay: "0s, 1s", // fadeIn dulu, lalu mulai float
+                        }}
+                    />
 
-                        <div className="flex flex-col md:flex-row items-start gap-6">
-                            {/* Gambar + Label */}
-                            <div className="relative w-full md:w-[40%]">
-                                <img
-                                    src={`/paslon/paslon_${currentCandidate.id}.jpg`}
-                                    alt={currentCandidate.name}
-                                    className="w-full h-auto max-h-[600px] rounded-xl bg-black/10"
-                                />
+                    {/* Logo tengah (Stemba) */}
+                    <div
+                        className="mx-6 w-28 h-28 sm:w-36 sm:h-36 bg-center bg-contain bg-no-repeat opacity-0 animate-logoEnter"
+                        style={{
+                            backgroundImage: "url('/img/stemba.png')",
+                            animationDelay: "0.3s, 1.3s",
+                        }}
+                    ></div>
 
-                                {/* Label Ketua & Wakil */}
-                                <div
-                                    className="
-                                    absolute inset-x-0 bottom-4
-                                    flex flex-col items-center gap-2
-                                    sm:flex-row sm:justify-between sm:items-end
-                                    px-4
-                                "
-                                >
-                                    {/* Ketua */}
-                                    <div
-                                        className="
-                                    bg-primary text-white px-4 py-2
-                                    rounded-2xl text-center shadow-md text-sm font-semibold
-                                    sm:w-[48%] w-[80%]
-                                    "
-                                    >
-                                        Ketua
-                                        <br />
-                                        <span className="font-normal">
-                                            {currentCandidate.ketua}
-                                        </span>
-                                    </div>
-
-                                    {/* Wakil */}
-                                    <div
-                                        className="
-              bg-primary text-white px-4 py-2
-              rounded-2xl text-center shadow-md text-sm font-semibold
-              sm:w-[48%] w-[80%]
-            "
-                                    >
-                                        Wakil
-                                        <br />
-                                        <span className="font-normal">
-                                            {currentCandidate.wakil}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* VISI & MISI */}
-                            <div className="flex flex-col gap-6 w-full md:w-[60%] mt-4 md:mt-0">
-                                <div className="relative">
-                                    <span className="absolute -top-3 left-4 bg-primary text-white px-3 py-1 rounded-2xl text-sm shadow-md z-10">
-                                        VISI
-                                    </span>
-                                    <div className="bg-white text-black pt-6 pb-4 px-4 rounded-xl shadow-md">
-                                        <p>{currentCandidate.visi}</p>
-                                    </div>
-                                </div>
-
-                                <div className="relative">
-                                    <span className="absolute -top-3 left-4 bg-primary text-white px-3 py-1 rounded-2xl text-sm shadow-md z-10">
-                                        MISI
-                                    </span>
-                                    <div className="bg-white text-black pt-6 pb-4 px-4 rounded-xl shadow-md">
-                                        <ol className="list-decimal pl-5 flex flex-col gap-1">
-                                            {currentCandidate.misi.map(
-                                                (item, idx) => (
-                                                    <li key={idx}>{item}</li>
-                                                )
-                                            )}
-                                        </ol>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Navigasi */}
-                        <div className="flex justify-between mt-2">
-                            <button
-                                onClick={handlePrev}
-                                disabled={currentIndex === 0}
-                                className="bg-primary text-white w-12 h-12 flex items-center justify-center rounded-lg disabled:opacity-50 shadow-lg cursor-pointer active:scale-70 transition-transform duration-150"
-                            >
-                                <ChevronLeft size={28} />
-                            </button>
-
-                            <button
-                                onClick={handleNext}
-                                className="bg-primary text-white w-12 h-12 flex items-center justify-center rounded-lg shadow-md gap-1 cursor-pointer active:scale-70 transition-transform duration-150"
-                            >
-                                {currentIndex === candidates.length - 1 ? (
-                                    <CheckCircle size={24} />
-                                ) : (
-                                    <ChevronRight size={28} />
-                                )}
-                            </button>
-                        </div>
-                    </div>
+                    {/* Logo kanan */}
+                    <img
+                        src="/img/osis.jpg"
+                        alt="Logo OSIS"
+                        className="w-16 h-16 object-contain rounded-2xl opacity-0 animate-logoEnter"
+                        style={{
+                            animationDelay: "0.6s, 1.6s",
+                        }}
+                    />
                 </div>
+
+                <h1
+                    className="text-5xl md:text-6xl font-bold font-genshin opacity-0 animate-fadeInText leading-tight"
+                    style={{ animationDelay: "1.4s" }}
+                >
+                    Pemilihan Ketua <br /> dan Wakil OSIS
+                </h1>
+
+                <div
+                    className="w-0 h-[2px] bg-white mx-auto my-6 animate-expandLine"
+                    style={{ animationDelay: "0.6s" }}
+                ></div>
+
+                <p
+                    className="text-3xl md:text-4xl opacity-0 animate-fadeInYear font-genshin"
+                    style={{ animationDelay: "1.8s" }}
+                >
+                    2025/2026
+                </p>
+
+                <button
+                    className="mt-12 bg-primary text-white font-semibold px-10 py-3 rounded-lg shadow-md opacity-0 animate-fadeInButton text-lg cursor-pointer"
+                    style={{
+                        animationDelay: "2.2s",
+                        animationFillMode: "forwards",
+                    }}
+                >
+                    Lanjut
+                </button>
             </div>
 
-            {/* Inline CSS keyframes */}
+            {/* Keyframes */}
             <style>{`
                 @keyframes blobMove {
                   0% { transform: translate3d(0,0,0) scale(1); }
@@ -376,12 +278,88 @@ const Home = () => {
                   50% { transform: translateY(-8px) rotate(3deg); }
                   100% { transform: translateY(0) rotate(0deg); }
                 }
-
-                /* small responsive adjustment */
-                @media (max-width: 640px) {
-                  .flex-col.md\\:flex-row { flex-direction: column; }
+                @keyframes logoFloat {
+                  0%,100% { transform: translateY(0); }
+                  50% { transform: translateY(-6px); }
                 }
-              `}</style>
+                .animate-logoFloat {
+                  animation: logoFloat 3.2s ease-in-out infinite;
+                }
+
+                @keyframes pulseRotateShake {
+                0% { transform: scale(1) rotate(0deg); }
+                10% { transform: scale(1.05) rotate(5deg); }
+                20% { transform: scale(1.1) rotate(8deg); }
+                30% { transform: scale(1.05) rotate(5deg); }
+                40% { transform: scale(1.03) rotate(-4deg); }
+                50% { transform: scale(1) rotate(0deg); }
+                100% { transform: scale(1) rotate(0deg); }
+                }
+
+                .animate-expandLine { animation: expandLine 1s ease-out forwards; }
+                .animate-fadeInSchool { animation: fadeInSchool 0.8s ease-out forwards; }
+                .animate-fadeInLogo { animation: fadeInLogo 0.8s ease-out forwards; }
+                .animate-fadeInText { animation: fadeInText 0.8s ease-out forwards; }
+                .animate-fadeInYear { animation: fadeInYear 0.8s ease-out forwards; }
+
+                .animate-fadeInButton {
+                  animation:
+                    fadeInButton 0.8s ease-out forwards,
+                    pulseRotateShake 2.5s ease-in-out 5s infinite alternate;
+                  animation-delay: 2.2s, 6s;
+                }
+
+                @keyframes expandLine {
+                  0% { width: 0; opacity: 0; }
+                  50% { opacity: 1; }
+                  100% { width: 380px; opacity: 1; }
+                }
+                @keyframes fadeInSchool {
+                  0% { transform: translateY(20px); opacity: 0; }
+                  100% { transform: translateY(0); opacity: 1; }
+                }
+                @keyframes fadeInLogo {
+                  0% { transform: translateY(20px); opacity: 0; }
+                  100% { transform: translateY(0); opacity: 1; }
+                }
+                @keyframes fadeInText {
+                  0% { transform: translateY(15px); opacity: 0; }
+                  100% { transform: translateY(0); opacity: 1; }
+                }
+                @keyframes fadeInYear {
+                  0% { transform: translateY(10px); opacity: 0; }
+                  100% { transform: translateY(0); opacity: 1; }
+                }
+                @keyframes fadeInButton {
+                  0% { transform: translateY(10px); opacity: 0; }
+                  100% { transform: translateY(0); opacity: 1; }
+                }
+                
+                @keyframes logoEnter {
+                0% { transform: translateY(25px); opacity: 0; }
+                100% { transform: translateY(0); opacity: 1; }
+                }
+
+                @keyframes float {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-8px); }
+                }
+
+                /* kombinasi dua animasi: masuk dulu, lalu terus naik-turun */
+                .animate-logoEnter {
+                animation:
+                    logoEnter 0.8s ease-out forwards,
+                    float 3s ease-in-out 1s infinite;
+                }
+                @keyframes float {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-10px); }
+                }
+
+                .animate-float {
+                animation: float 3s ease-in-out infinite;
+                }
+            `}</style>
         </div>
     );
 };
