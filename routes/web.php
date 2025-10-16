@@ -21,9 +21,13 @@ Route::middleware([PreventMultipleVotes::class])->group(function () {
         ->group(function () {
             require_once __DIR__ . '/voter/vote.php';
         });
-    Route::get('/', function () {
-        return inertia('Home');
+        Route::get('/voter/paslon', function () {
+            return inertia('Votes/Paslon');
+        });
     });
+    
+Route::get('/', function () {
+        return inertia('Home');
 });
 
 Route::prefix('/auth')
