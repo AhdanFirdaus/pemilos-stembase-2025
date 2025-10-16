@@ -1,0 +1,71 @@
+services:
+  app:
+    build: ./
+    container_name: laravel_pemilos_2025
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+      - ./storage/logs:/var/www/storage/logs
+    depends_on:
+      - db
+    environment:
+      APP_NAME: Laravel
+      APP_ENV: local
+      APP_KEY: base64:m2HQncURSDWonSRF83faAgsFNlyHpX0Nollyavo0MWg=
+      APP_DEBUG: true
+      APP_URL: http://localhost:8000
+
+      APP_LOCALE: en
+      APP_FALLBACK_LOCALE: en
+      APP_FAKER_LOCALE: en_US
+
+      APP_MAINTENANCE_DRIVER: file
+      # APP_MAINTENANCE_STORE: database
+
+      PHP_CLI_SERVER_WORKERS: 4
+
+      BCRYPT_ROUNDS: 12
+
+      LOG_CHANNEL: stack
+      LOG_STACK: single
+      LOG_DEPRECATIONS_CHANNEL: null
+      LOG_LEVEL: debug
+
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: pemilos_stembase_2025
+      DB_USERNAME: root
+      DB_PASSWORD: root
+
+      SESSION_DRIVER: database
+      SESSION_LIFETIME: 120
+      SESSION_ENCRYPT: false
+      SESSION_PATH: /
+      SESSION_DOMAIN: null
+
+  web:
+    image: nginx:latest
+    container_name: laravel_pemilos_nginx
+    ports:
+      - "8000:80"
+    depends_on:
+      - app
+    volumes:
+      - ./:/var/www/:ro
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+
+  db:
+    image: mariadb:10.4.32
+    container_name: laravel_pemilos_db
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: pemilos
+    ports:
+      - "9999:3306"   # optional: access DB from host at localhost:9999
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:

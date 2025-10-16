@@ -22,7 +22,7 @@ class PreventMultipleVotes
         // dd('tes');
         if (!$voter) {
             return redirect()->route('index')->withErrors([
-                'messages' => 'You Have already voted!'
+                'messages' => 'You are not voter yet'
             ]);
         }
         
