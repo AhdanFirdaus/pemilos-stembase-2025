@@ -29,7 +29,7 @@ export default function FormGuru({ onClose, type, initialData, onSuccess }) {
             onClose();
             onSuccess("add", data.nama);
           },
-          preserveState: false,
+          preserveState: true,
         });
       }
     }
