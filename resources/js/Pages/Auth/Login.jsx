@@ -31,7 +31,7 @@ export default function Login() {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log("================")
-        post("/auth/login"); // 👈 your route endpoint here (adjust as needed)
+        post("/auth/login");
     };
 
     // refs untuk icon inner element (yang digeser oleh cursor)
@@ -240,7 +240,6 @@ export default function Login() {
                             top: it.top,
                             left: it.left,
                             transform: "translate3d(0,0,0)",
-                            // each icon gets slightly different float speed/delay to feel organic
                             animation: `iconFloat ${it.dur}ms ease-in-out ${
                                 idx * 200
                             }ms infinite`,
@@ -250,7 +249,7 @@ export default function Login() {
                             ref={addIconRef}
                             className="flex items-center justify-center"
                             style={{
-                                transform: "translate3d(0,0,0)", // this will be updated by mouse
+                                transform: "translate3d(0,0,0)",
                                 willChange: "transform",
                                 color: "rgba(255,255,255,0.95)",
                             }}
@@ -267,9 +266,10 @@ export default function Login() {
                 style={{ perspective: 1100 }}
             >
                 <div
-                    className="relative transition-transform duration-700 [transform-style:preserve-3d]"
+                    className="relative transition-transform duration-700"
                     style={{
                         minHeight: 420,
+                        transformStyle: "preserve-3d",
                         transform: isTeacher
                             ? "rotateY(180deg)"
                             : "rotateY(0deg)",
@@ -279,7 +279,11 @@ export default function Login() {
                     <form
                         onSubmit={handleSubmit}
                         className="absolute inset-0 p-10 rounded-2xl bg-white/3 backdrop-blur-sm border border-white/10 flex flex-col items-center justify-center"
-                        style={{ backfaceVisibility: "hidden" }}
+                        style={{ 
+                            backfaceVisibility: "hidden",
+                            WebkitBackfaceVisibility: "hidden",
+                            transform: "rotateY(0deg)"
+                        }}
                     >
                         <h2 className="text-3xl font-genshin mb-6">
                             Masuk Siswa
@@ -293,11 +297,11 @@ export default function Login() {
                             autoComplete="off"
                             type="text"
                             placeholder="Masukkan NISN"
-                            className="w-full placeholder-white/60 text-white rounded-lg px-4 py-3 mb-4 outline-none border border-white/12 focus:border-white/20"
+                            className="w-full placeholder-white/60 text-white rounded-lg px-4 py-3 mb-4 outline-none border border-white/12 focus:border-white/20 bg-white/5"
                         />
 
                         {errors.identifier && (
-                            <p className="text-red-400 text-sm mb-3">{errors.identifier}</p>
+                            <p className="text-red-400 text-sm mb-3 w-full">{errors.identifier}</p>
                         )}
 
                         <div className="relative w-full mb-4">
@@ -308,12 +312,12 @@ export default function Login() {
                                 onChange={(e) => setData("password", e.target.value)}
                                 type={showPassword ? "text" : "password"}
                                 placeholder="Masukkan Password"
-                                className="w-full placeholder-white/60 text-white rounded-lg px-4 py-3 pr-10 outline-none border border-white/12 focus:border-white/20"
+                                className="w-full placeholder-white/60 text-white rounded-lg px-4 py-3 pr-10 outline-none border border-white/12 focus:border-white/20 bg-white/5"
                             />
                             <button
                                 type="button"
                                 onClick={togglePassword}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 cursor-pointer"
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 cursor-pointer hover:text-white transition-colors"
                             >
                                 {showPassword ? (
                                     <Eye size={18} />
@@ -323,17 +327,21 @@ export default function Login() {
                             </button>
                         </div>
 
+                        {errors.password && (
+                            <p className="text-red-400 text-sm mb-3 w-full">{errors.password}</p>
+                        )}
+
                         <button 
                         type="submit"
                         disabled={processing}
-                        className="w-full bg-primary text-white font-semibold py-3 rounded-lg mb-3 cursor-pointer">
-                            Masuk
+                        className="w-full bg-primary text-white font-semibold py-3 rounded-lg mb-3 cursor-pointer hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                            {processing ? "Memproses..." : "Masuk"}
                         </button>
 
                         <button
                             type="button"
                             onClick={handleFlip}
-                            className="text-sm text-white/70 hover:text-white flex items-center gap-2 cursor-pointer hover:underline"
+                            className="text-sm text-white/70 hover:text-white flex items-center gap-2 cursor-pointer hover:underline transition-colors"
                         >
                             <School size={14} /> Masuk Sebagai Guru
                         </button>
@@ -344,8 +352,9 @@ export default function Login() {
                         onSubmit={handleSubmit}
                         className="absolute inset-0 p-10 rounded-2xl bg-white/3 backdrop-blur-sm border border-white/10 flex flex-col items-center justify-center"
                         style={{
-                            transform: "rotateY(180deg)",
                             backfaceVisibility: "hidden",
+                            WebkitBackfaceVisibility: "hidden",
+                            transform: "rotateY(180deg)",
                         }}
                     >
                         <h2 className="text-3xl font-genshin mb-6">
@@ -360,8 +369,12 @@ export default function Login() {
                             autoComplete="off"
                             type="text"
                             placeholder="Masukkan NUPTK"
-                            className="w-full text-white rounded-lg px-4 py-3 mb-4 outline-none border border-white/12 focus:border-white/20"
+                            className="w-full placeholder-white/60 text-white rounded-lg px-4 py-3 mb-4 outline-none border border-white/12 focus:border-white/20 bg-white/5"
                         />
+
+                        {errors.identifier && (
+                            <p className="text-red-400 text-sm mb-3 w-full">{errors.identifier}</p>
+                        )}
 
                         <div className="relative w-full mb-4">
                             <input
@@ -371,12 +384,12 @@ export default function Login() {
                                 autoComplete="new-password"
                                 type={showPassword ? "text" : "password"}
                                 placeholder="Masukkan Password"
-                                className="w-full text-white rounded-lg px-4 py-3 pr-10 outline-none border border-white/12 focus:border-white/20"
+                                className="w-full placeholder-white/60 text-white rounded-lg px-4 py-3 pr-10 outline-none border border-white/12 focus:border-white/20 bg-white/5"
                             />
                             <button
                                 type="button"
                                 onClick={togglePassword}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70"
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 cursor-pointer hover:text-white transition-colors"
                             >
                                 {showPassword ? (
                                     <Eye size={18} />
@@ -386,17 +399,21 @@ export default function Login() {
                             </button>
                         </div>
 
+                        {errors.password && (
+                            <p className="text-red-400 text-sm mb-3 w-full">{errors.password}</p>
+                        )}
+
                         <button 
                             type="submit"
                             disabled={processing}
-                            className="w-full bg-primary text-white font-semibold py-3 rounded-lg mb-3">
-                            Masuk
+                            className="w-full bg-primary text-white font-semibold py-3 rounded-lg mb-3 hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                            {processing ? "Memproses..." : "Masuk"}
                         </button>
 
                         <button
                             type="button"
                             onClick={handleFlip}
-                            className="text-sm text-white/70 hover:text-white flex items-center gap-2 cursor-pointer hover:underline"
+                            className="text-sm text-white/70 hover:text-white flex items-center gap-2 cursor-pointer hover:underline transition-colors"
                         >
                             <GraduationCap size={14} /> Masuk Sebagai Siswa
                         </button>
@@ -417,9 +434,16 @@ export default function Login() {
           100% { transform: translateY(0) rotate(0deg); }
         }
 
+        /* Firefox specific fixes */
+        @supports (-moz-appearance: none) {
+          .absolute[style*="backface-visibility"] {
+            isolation: isolate;
+          }
+        }
+
         /* small responsive adjustment */
         @media (max-width: 640px) {
-          .[transform-style\\:preserve-3d] { min-height: 420px; }
+          .relative[style*="transform-style"] { min-height: 420px; }
         }
       `}</style>
         </div>
