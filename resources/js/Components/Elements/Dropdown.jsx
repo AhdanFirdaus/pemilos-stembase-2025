@@ -14,7 +14,7 @@ export default function Dropdown({ label, options, value, onChange }) {
       {/* Trigger */}
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center justify-between w-full px-4 py-2 rounded-lg border border-gray-300 text-gray-700 bg-white hover:bg-purple-50 transition"
+        className="flex cursor-pointer items-center justify-between w-full px-4 py-2 rounded-lg border border-gray-300 text-gray-700 bg-white hover:bg-purple-50 transition"
       >
         <span>
           {
@@ -39,7 +39,7 @@ export default function Dropdown({ label, options, value, onChange }) {
               <button
                 key={i}
                 onClick={() => handleSelect(val)}
-                className={`block w-full px-3 py-2 text-left rounded-lg transition ${
+                className={`block cursor-pointer w-full px-3 py-2 text-left rounded-lg transition ${
                   value === val
                     ? "bg-purple-200 text-purple-700 font-medium"
                     : "text-gray-600 hover:bg-purple-50"

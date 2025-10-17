@@ -224,7 +224,7 @@ export default function Student({ students, filters }) {
                   onChange={handleFileChange}
                   className="hidden"
                 />
-                <Button variant="green" onClick={handleImportClick}>
+                <Button variant="green" onClick={handleImportClick} className="cursor-pointer">
                   <Upload size={16} className="mr-2" />
                   Impor
                 </Button>
@@ -234,11 +234,12 @@ export default function Student({ students, filters }) {
                 onClick={() => {
                   window.location.href = '/admin/siswaexport'
                 }}
+                className="cursor-pointer"
               >
                 <Download size={16} className="mr-2" />
                 Ekspor
               </Button>
-              <Button variant="red" onClick={() => setShowAlert(true)}>
+              <Button variant="red" onClick={() => setShowAlert(true)} className="cursor-pointer">
                 <Trash2 size={16} className="mr-2" />
                 Hapus Semua
               </Button>
@@ -252,6 +253,7 @@ export default function Student({ students, filters }) {
               onChange={handleSearchChange}
             />
             <Button
+              className="cursor-pointer"
               variant="primary"
               onClick={() => {
                 setEditingData(null);
@@ -281,7 +283,7 @@ export default function Student({ students, filters }) {
             <button
               disabled={!students.prev_page_url}
               onClick={() => router.visit(students.prev_page_url, { preserveState: true })}
-              className={`w-10 h-10 flex items-center justify-center rounded-md border transition
+              className={`w-10 h-10 flex items-center justify-center cursor-pointer rounded-md border transition
                 ${
                   !students.prev_page_url
                     ? "bg-gray-200 text-gray-400 cursor-not-allowed grayscale"
@@ -301,7 +303,7 @@ export default function Student({ students, filters }) {
                     { page: page, search: searchTerm },
                     { preserveState: true, replace: true }
                   )}
-                  className={`px-3 py-1 rounded-md text-sm font-medium transition
+                  className={`px-3 py-1 rounded-md text-sm font-medium cursor-pointer transition
                     ${
                       students.current_page === page
                         ? "bg-[#C8B6FF] text-white"
@@ -315,7 +317,7 @@ export default function Student({ students, filters }) {
             <button
               disabled={!students.next_page_url}
               onClick={() => router.visit(students.next_page_url, { preserveState: true })}
-              className={`w-10 h-10 flex items-center justify-center rounded-md border transition
+              className={`w-10 h-10 flex items-center cursor-pointer justify-center rounded-md border transition
                 ${
                   !students.next_page_url
                     ? "bg-gray-200 text-gray-400 cursor-not-allowed grayscale"

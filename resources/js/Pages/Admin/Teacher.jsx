@@ -232,12 +232,13 @@ export default function Teacher({ teachers, filters }) {
                   onChange={handleFileChange}
                   className="hidden"
                 />
-                <Button variant="green" onClick={handleImportClick}>
+                <Button variant="green" onClick={handleImportClick} className="cursor-pointer">
                   <Upload size={16} className="mr-2" />
                   Impor
                 </Button>
               </div>
               <Button
+                className="cursor-pointer"
                 variant="green"
                 onClick={() => {
                   window.location.href = '/admin/guruexport'
@@ -246,7 +247,7 @@ export default function Teacher({ teachers, filters }) {
                 <Download size={16} className="mr-2" />
                 Ekspor
               </Button>
-              <Button variant="red" onClick={() => setShowAlert(true)}>
+              <Button variant="red" onClick={() => setShowAlert(true)} className="cursor-pointer">
                 <Trash2 size={16} className="mr-2" />
                 Hapus Semua
               </Button>
@@ -260,6 +261,7 @@ export default function Teacher({ teachers, filters }) {
               onChange={handleSearchChange}
             />
             <Button
+            className="cursor-pointer"
               variant="primary"
               onClick={() => {
                 setEditingData(null);
@@ -289,7 +291,7 @@ export default function Teacher({ teachers, filters }) {
             <button
               disabled={currentPage === 1}
               onClick={() => setCurrentPage((p) => p - 1)}
-              className={`w-10 h-10 flex items-center justify-center rounded-md border transition
+              className={`w-10 h-10 flex items-center cursor-pointer justify-center rounded-md border transition
                 ${
                   currentPage === 1
                     ? "bg-gray-200 text-gray-400 cursor-not-allowed grayscale"
@@ -305,7 +307,7 @@ export default function Teacher({ teachers, filters }) {
                 <button
                   key={page}
                   onClick={() => setCurrentPage(page)}
-                  className={`px-3 py-1 rounded-md text-sm font-medium transition
+                  className={`px-3 py-1 rounded-md cursor-pointer text-sm font-medium transition
                     ${
                       currentPage === page
                         ? "bg-[#C8B6FF] text-white"
@@ -319,7 +321,7 @@ export default function Teacher({ teachers, filters }) {
             <button
               disabled={currentPage === totalPages}
               onClick={() => setCurrentPage((p) => p + 1)}
-              className={`w-10 h-10 flex items-center justify-center rounded-md border transition
+              className={`w-10 h-10 flex cursor-pointer items-center justify-center rounded-md border transition
                 ${
                   currentPage === totalPages
                     ? "bg-gray-200 text-gray-400 cursor-not-allowed grayscale"

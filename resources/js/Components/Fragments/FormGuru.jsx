@@ -92,10 +92,10 @@ export default function FormGuru({ onClose, type, initialData, onSuccess }) {
 
           {/* Action Buttons */}
           <div className="flex justify-end gap-3">
-            <Button variant="secondary" onClick={onClose} type="button">
+            <Button variant="secondary" onClick={onClose} type="button" className="cursor-pointer">
               Batal
             </Button>
-            <Button variant="primary" type="submit" disabled={processing}>
+            <Button variant="primary" type="submit" disabled={processing} className="cursor-pointer">
               {isEditing ? "Simpan" : "Tambah"}
             </Button>
           </div>

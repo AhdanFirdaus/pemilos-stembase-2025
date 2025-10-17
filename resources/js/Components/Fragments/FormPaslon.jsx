@@ -179,7 +179,7 @@ export default function FormPaslon({ onClose, initialData, onSuccess }) {
               <input
                 type="file"
                 onChange={handleFileChange}
-                className="w-full text-sm border rounded-lg p-2 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-purple-300 file:text-purple-700 hover:file:bg-purple-400"
+                className="w-full cursor-pointer text-sm border rounded-lg p-2 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-purple-300 file:text-purple-700 hover:file:bg-purple-400"
               />
               {errors.foto && <div className="text-red-500 text-sm">{errors.foto}</div>}
             </div>
@@ -211,10 +211,10 @@ export default function FormPaslon({ onClose, initialData, onSuccess }) {
 
           {/* Action Buttons */}
           <div className="flex justify-end gap-3">
-            <Button type="button" variant="secondary" onClick={onClose}>
+            <Button type="button" variant="secondary" onClick={onClose} className="cursor-pointer">
               Batal
             </Button>
-            <Button variant="primary" type="submit" disabled={processing}>
+            <Button variant="primary" type="submit" disabled={processing} className="cursor-pointer">
               {processing ? "Loading..." : isEditing ? "Simpan" : "Tambah"}
             </Button>
           </div>

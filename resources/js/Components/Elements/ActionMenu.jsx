@@ -21,7 +21,7 @@ export default function ActionMenu({ onEdit, onDelete }) {
     <div className="relative" ref={menuRef}>
       {/* Tombol trigger */}
       <button
-        className="p-1 rounded hover:bg-gray-100"
+        className="p-1 rounded hover:bg-gray-100 cursor-pointer"
         onClick={() => setOpen((prev) => !prev)}
       >
         <MoreHorizontal size={16} className="text-gray-500" />
@@ -35,7 +35,7 @@ export default function ActionMenu({ onEdit, onDelete }) {
               onEdit();
               setOpen(false);
             }}
-            className="block w-full text-left px-4 py-3 text-sm font-medium text-gray-800 hover:bg-gray-100"
+            className="block w-full text-left px-4 py-3 cursor-pointer text-sm font-medium text-gray-800 hover:bg-gray-100"
           >
             Edit
           </button>
@@ -45,7 +45,7 @@ export default function ActionMenu({ onEdit, onDelete }) {
               onDelete();
               setOpen(false);
             }}
-            className="block w-full text-left px-4 py-3 text-sm font-medium text-pink-600 hover:bg-pink-50"
+            className="block w-full text-left px-4 py-3 cursor-pointer text-sm font-medium text-pink-600 hover:bg-pink-50"
           >
             Hapus
           </button>

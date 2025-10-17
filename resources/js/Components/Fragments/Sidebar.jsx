@@ -41,7 +41,7 @@ export default function Sidebar() {
           )}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="text-gray-600 hover:text-purple-700 focus:outline-none p-2 rounded-full hover:bg-purple-100 flex justify-center"
+            className="text-gray-600 cursor-pointer hover:text-purple-700 focus:outline-none p-2 rounded-full hover:bg-purple-100 flex justify-center"
           >
             <Menu size={20} />
           </button>
@@ -84,7 +84,7 @@ export default function Sidebar() {
           href="/auth/admin/logout"
           method="post"
           as="button"
-          className={`flex items-center gap-2 w-full py-2 rounded-lg transition-all duration-200 ${
+          className={`flex cursor-pointer items-center gap-2 w-full py-2 rounded-lg transition-all duration-200 ${
             isOpen
               ? "px-4 bg-pink-200 text-pink-700 font-medium hover:bg-pink-300 justify-start"
               : "px-2 justify-center bg-pink-200 text-pink-700 hover:bg-pink-300"

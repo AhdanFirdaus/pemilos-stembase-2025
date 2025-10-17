@@ -61,7 +61,7 @@ export default function Login() {
               />
               <button
                 type="button"
-                className="absolute right-3 top-2.5 text-gray-500"
+                className="absolute right-3 top-2.5 cursor-pointer text-gray-500"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? <FiEyeOff /> : <FiEye />}
@@ -79,7 +79,7 @@ export default function Login() {
               id="remember"
               checked={data.remember}
               onChange={(e) => setData("remember", e.target.checked)}
-              className="w-4 h-4 text-purple-500 border-gray-300 rounded focus:ring-purple-400"
+              className="w-4 h-4 text-purple-500 cursor-pointer border-gray-300 rounded focus:ring-purple-400"
             />
             <label htmlFor="remember" className="text-sm text-gray-700">
               Ingat Saya
@@ -90,7 +90,7 @@ export default function Login() {
           <Button
             type="submit"
             variant="primary"
-            className="w-full justify-center"
+            className="w-full justify-center cursor-pointer"
             disabled={processing}
           >
             {processing ? "Memproses..." : "Login"}

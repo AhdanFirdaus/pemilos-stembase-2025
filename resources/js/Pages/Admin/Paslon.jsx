@@ -117,6 +117,7 @@ export default function Paslon({ pairCandidates = [] }) {
                   setEditingData(null);
                   setOpenForm(true);
                 }}
+                className="cursor-pointer"
               >
                 Tambah Paslon
               </Button>
@@ -154,7 +155,7 @@ export default function Paslon({ pairCandidates = [] }) {
               <button
                 key={i}
                 onClick={() => setCurrentPage(i + 1)}
-                className={`px-3 py-1 rounded-md text-sm font-medium transition
+                className={`px-3 py-1 rounded-md text-sm font-medium transition cursor-pointer
                   ${currentPage === i + 1
                     ? "bg-[#C8B6FF] text-white"
                     : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-100"
