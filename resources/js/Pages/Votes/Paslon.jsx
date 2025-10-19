@@ -12,12 +12,12 @@ import {
     ChevronRight,
     CheckCircle,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";  // Import Framer Motion
+import { motion, AnimatePresence } from "framer-motion";
 
 const Paslon = ({ pairs }) => {
     const [candidates, setCandidates] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [direction, setDirection] = useState(1);  // 1 untuk next (slide dari kanan), -1 untuk prev (slide dari kiri)
+    const [direction, setDirection] = useState(1);
     const iconInnerRefs = useRef([]);
     iconInnerRefs.current = [];
 
@@ -103,7 +103,7 @@ const Paslon = ({ pairs }) => {
         },
     ];
 
-    // Blobs konfigurasi (posisi, ukuran, opasitas, durasi)
+    // Blobs konfigurasi
     const blobs = [
         { top: "60%", left: "78%", size: 420, op: 0.38, dur: 5000, delay: 0 },
         {
@@ -131,19 +131,10 @@ const Paslon = ({ pairs }) => {
     useEffect(() => {
         setCandidates(pairs);
     }, []);
-    // useEffect(() => {
-    //     fetch("/data.json")
-    //         .then((response) => response.json())
-    //         .then((data) => setCandidates(data))
-    //         .catch((error) => console.error("Error fetching data:", error));
-    //     setCandidates(pairs);
-    // }, []);
 
-    // cursor following (throttle via requestAnimationFrame)
+    // cursor following
     useEffect(() => {
         let raf = null;
-
-        // Simpan posisi saat ini untuk tiap icon
         const positions = icons.map(() => ({ x: 0, y: 0 }));
 
         const onMove = (e) => {
@@ -161,12 +152,9 @@ const Paslon = ({ pairs }) => {
                     const tx = dx * amp * depth * 40;
                     const ty = dy * amp * depth * 40;
 
-                    // posisi sekarang
                     const p = positions[idx];
-                    // smoothing factor (0.1 lebih lambat, 0.3 lebih cepat)
                     const smooth = 0.12;
 
-                    // gerak perlahan menuju target
                     p.x += (tx - p.x) * smooth;
                     p.y += (ty - p.y) * smooth;
 
@@ -195,7 +183,7 @@ const Paslon = ({ pairs }) => {
             setCurrentIndex(currentIndex + 1);
         } else {
             console.log("Vote for", candidates[currentIndex]);
-            window.location.href = "/voter/"; // arahkan ke halaman lain
+            window.location.href = "/voter/";
         }
     };
 
@@ -208,7 +196,7 @@ const Paslon = ({ pairs }) => {
     // Variants untuk animasi slide
     const slideVariants = {
         enter: (direction) => ({
-            x: direction > 0 ? 300 : -300,  // Dari kanan jika next, kiri jika prev
+            x: direction > 0 ? 300 : -300,
             opacity: 0,
         }),
         center: {
@@ -220,7 +208,7 @@ const Paslon = ({ pairs }) => {
             },
         },
         exit: (direction) => ({
-            x: direction > 0 ? -300 : 300,  // Keluar ke kiri jika next, kanan jika prev
+            x: direction > 0 ? -300 : 300,
             opacity: 0,
             transition: {
                 x: { type: "spring", stiffness: 300, damping: 30 },
@@ -234,7 +222,7 @@ const Paslon = ({ pairs }) => {
             className="relative min-h-screen flex items-center justify-center overflow-hidden text-white"
             style={{ backgroundColor: "var(--color-secondary)" }}
         >
-            {/* ----- BLOBS (loop animation only) ----- */}
+            {/* ----- BLOBS ----- */}
             {blobs.map((b, i) => (
                 <div
                     key={i}
@@ -253,7 +241,7 @@ const Paslon = ({ pairs }) => {
                 />
             ))}
 
-            {/* ----- ICONS: outer has loop animation, inner is moved by cursor (refs) ----- */}
+            {/* ----- ICONS ----- */}
             {icons.map((it, idx) => {
                 const Outer = it.Icon;
                 return (
@@ -264,7 +252,6 @@ const Paslon = ({ pairs }) => {
                             top: it.top,
                             left: it.left,
                             transform: "translate3d(0,0,0)",
-                            // each icon gets slightly different float speed/delay to feel organic
                             animation: `iconFloat ${it.dur}ms ease-in-out ${
                                 idx * 200
                             }ms infinite`,
@@ -274,7 +261,7 @@ const Paslon = ({ pairs }) => {
                             ref={addIconRef}
                             className="flex items-center justify-center"
                             style={{
-                                transform: "translate3d(0,0,0)", // this will be updated by mouse
+                                transform: "translate3d(0,0,0)",
                                 willChange: "transform",
                                 color: "rgba(255,255,255,0.95)",
                             }}
@@ -288,11 +275,10 @@ const Paslon = ({ pairs }) => {
             {/* ----- CONTENT CARD ----- */}
             <div className="min-h-screen flex justify-center items-center py-6">
                 <div className="relative z-10 w-full max-w-[1100px] mx-6">
-                    <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 flex flex-col gap-4 border border-white/10 overflow-hidden">  {/* Overflow hidden untuk clip animasi */}
-                        {/* Animasi hanya pada bagian ini */}
+                    <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 flex flex-col gap-4 border border-white/10 overflow-hidden">
                         <AnimatePresence initial={false} custom={direction} mode="wait">
                             <motion.div
-                                key={currentCandidate.id || currentIndex}  // Key unik agar trigger animasi
+                                key={currentCandidate.id || currentIndex}
                                 custom={direction}
                                 variants={slideVariants}
                                 initial="enter"
@@ -384,24 +370,33 @@ const Paslon = ({ pairs }) => {
                             </motion.div>
                         </AnimatePresence>
 
-                        {/* Navigasi (di luar animasi agar tetap statis) */}
-                        <div className="flex justify-between mt-2">
+                        {/* Navigasi dengan teks di dalam div yang sama */}
+                        <div className="flex justify-between items-center mt-2">
+                            {/* Tombol Previous dengan teks */}
                             <button
                                 onClick={handlePrev}
                                 disabled={currentIndex === 0}
-                                className="bg-primary text-white w-12 h-12 flex items-center justify-center rounded-lg disabled:opacity-50 shadow-lg cursor-pointer active:scale-70 transition-transform duration-150"
+                                className="flex items-center gap-2 bg-primary text-white px-4 py-3 rounded-lg disabled:opacity-50 shadow-lg cursor-pointer active:scale-95 transition-transform duration-150"
                             >
-                                <ChevronLeft size={28} />
+                                <ChevronLeft size={24} />
+                                <span className="text-sm">Paslon Sebelumnya</span>
                             </button>
 
+                            {/* Tombol Next dengan teks */}
                             <button
                                 onClick={handleNext}
-                                className="bg-primary text-white w-12 h-12 flex items-center justify-center rounded-lg shadow-md gap-1 cursor-pointer active:scale-70 transition-transform duration-150"
+                                className="flex items-center gap-2 bg-primary text-white px-4 py-3 rounded-lg shadow-md cursor-pointer active:scale-95 transition-transform duration-150"
                             >
                                 {currentIndex === candidates.length - 1 ? (
-                                    <CheckCircle size={24} />
+                                    <>
+                                        <CheckCircle size={20} />
+                                        <span className="text-sm">Ke Halaman Voting</span>
+                                    </>
                                 ) : (
-                                    <ChevronRight size={28} />
+                                    <>
+                                        <span className="text-sm">Paslon Selanjutnya</span>
+                                        <ChevronRight size={24} />
+                                    </>
                                 )}
                             </button>
                         </div>
@@ -422,7 +417,6 @@ const Paslon = ({ pairs }) => {
                   100% { transform: translateY(0) rotate(0deg); }
                 }
 
-                /* small responsive adjustment */
                 @media (max-width: 640px) {
                   .flex-col.md\\:flex-row { flex-direction: column; }
                 }
