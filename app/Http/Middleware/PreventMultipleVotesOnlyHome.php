@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class PreventMultipleVotes
+class PreventMultipleVotesOnlyHome
 {
     /**
      * Handle an incoming request.
@@ -17,25 +17,25 @@ class PreventMultipleVotes
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $voter = auth('voter')->user();
-        // If not logged in, redirect to login
         // dd('tes');
+        $voter = auth('voter')->user();
+        // dd($voter);
         if (!$voter) {
-            return redirect()->route('index')->withErrors([
-                'message' => 'Kamu belum login akun Voter!'
-            ]);
+            $voter = (object) [
+        'id' => 999999,
+        'name' => 'example',
+    ];
         }
-        
-        // Check if already voted
+        $nama = $voter->name;
+        // dd($voter->id);
         if (Vote::where('voter_id', $voter->id)->exists()) {
             Auth::guard('voter')->logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
-            return redirect()->route('authlogin.index')->withErrors([
-                'message' => 'You have already voted!'
+            return redirect()->route('index')->withErrors([
+                'message' => "Akun $nama sudah melakukan voting!"
             ]);
         }
-
         return $next($request);
     }
 }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Middleware\AdminLogin;
 use App\Http\Middleware\PreventMultipleVotes;
+use App\Http\Middleware\PreventMultipleVotesOnlyHome;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware([AdminLogin::class])->group(function () {
@@ -25,9 +26,11 @@ Route::middleware([PreventMultipleVotes::class])->group(function () {
     });
 });
     
-Route::get('/', function () {
-    return inertia('Home');
-})->name('index');
+Route::middleware([PreventMultipleVotesOnlyHome::class])->group(function () {
+    Route::get('/', function () {
+        return inertia('Home');
+    })->name('index');
+});
 
 Route::prefix('/auth')
     ->name('auth')

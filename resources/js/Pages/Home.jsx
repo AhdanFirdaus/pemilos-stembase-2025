@@ -9,12 +9,24 @@ import {
     Asterisk,
     Earth,
 } from "lucide-react";
+import { useForm, usePage } from "@inertiajs/react";
+import Alert from "../Components/Elements/Alert"
 
 const Home = () => {
     const [candidates, setCandidates] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const iconInnerRefs = useRef([]);
+    const [showSuccess, setShowSuccess] = useState(false);
+    const { props } = usePage()
     iconInnerRefs.current = [];
+
+    useEffect(() => {
+        console.log("aaaaaaaaaaaaaa")
+        console.log(props)
+        if (props.errors.message) {
+            setShowSuccess(true);
+        }
+    },[])
 
     const addIconRef = (el) => {
         if (el && !iconInnerRefs.current.includes(el)) {
@@ -268,6 +280,16 @@ const Home = () => {
                     Lanjut
                 </button>
             </div>
+            {props.errors?.message && (
+            <Alert
+            isOpen={showSuccess}
+            icon="error"
+            title={'INVALID'}
+            text={props.errors.message}
+            confirmText="OK"
+            onConfirm={() => setShowSuccess(false)}
+            />
+        )}
 
             {/* Keyframes */}
             <style>{`

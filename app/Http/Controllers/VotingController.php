@@ -54,6 +54,9 @@ class VotingController extends Controller
         $voter = Voter::findOrFail($voter_id);
         $voter->status = 'sudah';
         $voter->save();
+        Auth::guard('voter')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         return redirect()->route('authlogin.index')->with('message', 'Vote submitted successfully!');
     }
 

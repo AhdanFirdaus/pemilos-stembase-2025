@@ -170,7 +170,7 @@ export default function Student({ students, filters }) {
       render: (row) => (
         <span
           className={`px-2 py-1 rounded-full text-xs font-medium ${
-            row.status === "Sudah"
+            row.status === "sudah"
               ? "bg-green-100 text-green-600"
               : "bg-pink-100 text-pink-600"
           }`}

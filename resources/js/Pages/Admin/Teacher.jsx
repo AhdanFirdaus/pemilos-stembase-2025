@@ -155,7 +155,7 @@ export default function Teacher({ teachers, filters }) {
   const columns = [
     { key: "id", header: "No" },
     { key: "nama", header: "Nama" },
-    { key: "nip", header: "NIP" },
+    { key: "nip", header: "Username" },
     {
       key: "pass",
       header: "Pass",
@@ -178,7 +178,7 @@ export default function Teacher({ teachers, filters }) {
       render: (row) => (
         <span
           className={`px-2 py-1 rounded-full text-xs font-medium ${
-            row.status === "Sudah"
+            row.status === "sudah"
               ? "bg-green-100 text-green-600"
               : "bg-pink-100 text-pink-600"
           }`}
